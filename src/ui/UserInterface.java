@@ -1,14 +1,17 @@
 package ui;
 
+import model.Login;
 import java.util.Scanner;
 
-import model.Login;
 
 
 public class UserInterface {
 	
 	public UserInterface() {
-		boolean loginOK = loginPrompt();
+		boolean loginOK = false;
+		while (!loginOK) {
+			loginPrompt();
+		}
 	}
 	
 	private boolean loginPrompt() {
