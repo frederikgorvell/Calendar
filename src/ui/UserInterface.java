@@ -12,7 +12,7 @@ public class UserInterface {
 		Scanner term = new Scanner(System.in);
 		System.out.println("Enter username: ");
 		String username = term.nextLine();
-		return true;
+		return false;
 	}
 	
 	public static void main(String[] args) {
