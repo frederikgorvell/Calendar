@@ -11,7 +11,7 @@ public class UserInterface {
 	public UserInterface() {
 		boolean loginOK = false;
 		while (!loginOK) {
-			loginPrompt();
+			loginOK = loginPrompt();
 		}
 	}
 	
