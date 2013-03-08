@@ -1,7 +1,8 @@
-package ui;
+package client.ui;
 
-import model.Login;
 import java.util.Scanner;
+
+import client.model.Login;
 
 
 
