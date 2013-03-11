@@ -13,12 +13,12 @@ public final class XMLConverter {
 	File toXML(Login login, String filename) {
 		StringBuffer s = new StringBuffer();
 		final String type = "Login";
-		
+
 		s.append(XML_VERSION_ENCODING);
-		s.append("<"+type+">");
+		s.append("<" + type + ">");
 		addTag(s, "Username", login.getUsername());
 		addTag(s, "Password", login.getPassword());
-		s.append("</"+type+">\n");
+		s.append("</" + type + ">\n");
 
 		return toFile(s, filename);
 	}
@@ -28,13 +28,13 @@ public final class XMLConverter {
 		final String type = "Appointment";
 
 		s.append(XML_VERSION_ENCODING);
-		s.append("<"+type+">");
+		s.append("<" + type + ">");
 		addTag(s, "Start", appointment.getStart().toString());
 		addTag(s, "End", appointment.getEnd().toString());
 		addTag(s, "Description", appointment.getDescription());
 		addTag(s, "Location", appointment.getLocation());
 		addTag(s, "Status", appointment.getStatus());
-		s.append("</"+type+">");
+		s.append("</" + type + ">");
 
 		return toFile(s, filename);
 	}
