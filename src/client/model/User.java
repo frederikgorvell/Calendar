@@ -14,5 +14,13 @@ public class User {
 		this.phonenumber = phonenumber;
 		
 	}
+	
+	public void createProfile() {
+		
+	}
+	
+	public void editProfile() {
+		
+	}
 
 }
