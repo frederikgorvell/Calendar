@@ -2,9 +2,16 @@
 
 package client.model;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 
 public final class XMLConverter {
 
@@ -56,6 +63,25 @@ public final class XMLConverter {
 		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 			return f;
+		}
+	}
+	
+	Object readXMLintoObject (String filename){
+		try {
+//			FileReader fstream = new FileReader(filename); // Create file
+//			BufferedReader in = new BufferedReader(fstream);
+//			in.readLine();
+//
+//			in.close();// Close the input stream
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.parse(filename);
+		    System.out.println( document.getFirstChild().getTextContent() );
+			
+			return null;
+		} catch (Exception e) {// Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+			return null;
 		}
 	}
 
