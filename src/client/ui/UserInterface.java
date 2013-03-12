@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 import client.model.Login;
 
-
-
 public class UserInterface {
 	
 	public UserInterface() throws Exception /* CHANGE! */{
@@ -25,7 +23,7 @@ public class UserInterface {
 		System.out.print("Enter password: ");
 		String password = term.nextLine();
 		Login log = new Login(username, password);
-		/*if (log.isCorrect()) {
+		/*if (isCorrect(log)) {
 			return true;
 		}*/
 		return true;
