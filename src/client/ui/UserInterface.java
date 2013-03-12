@@ -1,8 +1,16 @@
 package client.ui;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import client.model.Login;
 
@@ -95,6 +103,8 @@ class Shell {
 
 	void printInputPrefix() {
 		System.out.print("Calendar> ");
+		//GregorianCalendar gc = new GregorianCalendar(2013, 2, 30, 25, 61);
+		//System.out.println(gc.get(Calendar.DAY_OF_MONTH));
 	}
 
 	void handleUserInput() throws IOException {
@@ -155,8 +165,11 @@ class Shell {
 	
 	private void newAppointment() {
 		//TODO
-		Date start = askUserStart();
-		Date end = askUserEnd();
+		GregorianCalendar start = askUserStart();
+		start.setMinimalDaysInFirstWeek(4);
+		start.setFirstDayOfWeek(Calendar.MONDAY);
+		System.out.println("week: " + start.get(Calendar.WEEK_OF_YEAR));
+		//Date end = askUserEnd();
 		
 		//Appointment a = new Appointment(start, end, "normal");
 		/*
@@ -177,18 +190,82 @@ class Shell {
 		*/
 	}
 	
-	private Date askUserStart() {
+	/*private Date parseDate(String maybeDate, String format, boolean lenient) {
+	    Date date = null;
+
+	    // test date string matches format structure using regex
+	    // - weed out illegal characters and enforce 4-digit year
+	    // - create the regex based on the local format string
+	    String reFormat = Pattern.compile("d+|M+").matcher(Matcher.quoteReplacement(format)).replaceAll("\\\\d{1,2}");
+	    reFormat = Pattern.compile("y+").matcher(reFormat).replaceAll("\\\\d{4}");
+	    if ( Pattern.compile(reFormat).matcher(maybeDate).matches() ) {
+
+	      // date string matches format structure, 
+	      // - now test it can be converted to a valid date
+	      SimpleDateFormat sdf = (SimpleDateFormat)DateFormat.getDateInstance();
+	      sdf.applyPattern(format);
+	      sdf.setLenient(lenient);
+	      try { date = sdf.parse(maybeDate); } catch (ParseException e) { }
+	    } 
+	    return date;
+	  } */
+
+	  // used like this:
+	  //Date date = parseDate( "21/5/2009", "d/M/yyyy", false);
+	
+	private GregorianCalendar askUserStart() {
 		//TODO
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Start time (dd.mm.yyyy hh:mm): ");
-		String[] rawList = sc.nextLine().split(" ");
-		String date = rawList[0];
-		return null;
+		String time = sc.nextLine();
+		boolean dateOK = false;
+		while (!dateOK /* || time = "cancel"*/) {
+			if (isLegalTime(time)) {
+				dateOK = true;
+			} else {
+				System.out.println("Wrong date format!");
+				System.out.print("Start time (dd.mm.yyyy hh:mm): ");
+				time = sc.nextLine();
+			}
+		}
+		/* if time == "cancel" ...*/
+		String[] rawList = time.split(" ");
+		String[] date = rawList[0].split("\\.");
+		String[] clock = rawList[1].split(":");
+		int year = Integer.parseInt(date[2]);
+		int month = Integer.parseInt(date[1]) - 1;
+		int day = Integer.parseInt(date[0]);
+		int hour = Integer.parseInt(clock[0]);
+		int minute = Integer.parseInt(clock[1]);
+		GregorianCalendar gc = new GregorianCalendar(year, month, day, hour, minute);
+		return gc;
 		
 	}
+	
 	private Date askUserEnd() {
 		//TODO
 		return null;
+	}
+	
+	private boolean isLegalTime(String s) {
+		try {
+			String[] rawList = s.split(" ");
+			String[] time = rawList[1].split(":");
+			int hour = Integer.parseInt(time[0]);
+			int minute = Integer.parseInt(time[1]);
+			if (0 <= hour && hour < 24 && 0 <= minute && minute < 60 && isLegalDate(rawList[0])) {
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private boolean isLegalDate(String s) {
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	    sdf.setLenient(false);
+	    return sdf.parse(s, new ParsePosition(0)) != null;
 	}
 
 }
