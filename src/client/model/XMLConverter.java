@@ -82,6 +82,4 @@ public final class XMLConverter {
 			return null;
 		}
 	}
-
->>>>>>> origin/XML
 }
