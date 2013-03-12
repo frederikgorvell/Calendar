@@ -9,6 +9,7 @@ public class Appointment {
 	private String description;
 	private String status;
 	private String location;
+	private String name;
 
 	public Appointment(Date start, Date end, String status) {
 		super();
@@ -65,6 +66,14 @@ public class Appointment {
 
 	public void setEnd(Date end) {
 		this.end = end;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
