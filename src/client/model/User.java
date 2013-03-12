@@ -16,7 +16,7 @@ public class User {
 	}
 	
 	public void createProfile() {
-		
+		//
 	}
 	
 	public void editProfile() {
