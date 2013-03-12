@@ -3,7 +3,11 @@ package client.net;
 import java.io.*;
 import java.net.*;
 
-class ClientSocket {
+public class ClientSocket {
+	public void send(File f) {
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
 		String sentence;
 		String modifiedSentence;

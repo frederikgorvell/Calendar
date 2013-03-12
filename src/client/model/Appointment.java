@@ -4,27 +4,26 @@ import java.util.Date;
 
 public class Appointment {
 
-	private Date start;
-	private Date end;
+	private String start;
+	private String end;
+	private int week;
 	private String description;
-	private String status;
 	private String location;
 	private String name;
 
-	public Appointment(Date start, Date end, String status) {
+	public Appointment(String start, String end) {
 		super();
 		this.start = start;
 		this.end = end;
-		this.status = status;
 	}
 
-	public Appointment(Date start, Date end, String description, String status,
+	public Appointment(String name, String start, String end, String description,
 			String location) {
 		super();
+		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.description = description;
-		this.status = status;
 		this.location = location;
 	}
 
@@ -36,14 +35,6 @@ public class Appointment {
 		this.description = description;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public String getLocation() {
 		return location;
 	}
@@ -52,19 +43,19 @@ public class Appointment {
 		this.location = location;
 	}
 
-	public Date getStart() {
+	public String getStart() {
 		return start;
 	}
 
-	public void setStart(Date start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
 
-	public Date getEnd() {
+	public String getEnd() {
 		return end;
 	}
 
-	public void setEnd(Date end) {
+	public void setEnd(String end) {
 		this.end = end;
 	}
 	
@@ -74,6 +65,14 @@ public class Appointment {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setWeek(int week) {
+		this.week = week;
+	}
+	
+	public int getWeek() {
+		return week;
 	}
 
 }

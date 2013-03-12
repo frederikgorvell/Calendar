@@ -15,7 +15,7 @@ public final class XMLConverter {
 
 	private static final String XML_VERSION_ENCODING = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-	File toXML(Login login, String filename) {
+	public File toXML(Login login, String filename) {
 		StringBuffer s = new StringBuffer();
 		final String type = "Login";
 
@@ -28,7 +28,7 @@ public final class XMLConverter {
 		return toFile(s, filename);
 	}
 
-	File toXML(Appointment appointment, String filename) {
+	public File toXML(Appointment appointment, String filename) {
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
 
@@ -38,7 +38,6 @@ public final class XMLConverter {
 		addTag(s, "End", appointment.getEnd().toString());
 		addTag(s, "Description", appointment.getDescription());
 		addTag(s, "Location", appointment.getLocation());
-		addTag(s, "Status", appointment.getStatus());
 		s.append("</" + type + ">");
 
 		return toFile(s, filename);

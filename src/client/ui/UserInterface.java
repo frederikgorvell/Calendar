@@ -1,5 +1,6 @@
 package client.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,7 +13,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import client.model.Login;
+import client.model.*;
+import client.net.*;
 
 public class UserInterface {
 	
@@ -21,7 +23,8 @@ public class UserInterface {
 		while (!loginOK) {
 			loginOK = loginPrompt();
 		}
-		new Shell();
+		ClientSocket cs = new ClientSocket();
+		new Shell(cs);
 	}
 	
 	private boolean loginPrompt() {
@@ -92,8 +95,12 @@ class CommandFeed {
 
 class Shell {
 	CommandFeed cli	= new CommandFeed();
+	private XMLConverter xmlC;
+	private ClientSocket clientSocket;
 
-	Shell() throws IOException {
+	Shell(ClientSocket clientSocket) throws IOException {
+		this.clientSocket = clientSocket;
+		xmlC = new XMLConverter();
 		printInputPrefix();
 		while(cli.hasMoreCommands()) {
 			handleUserInput();
@@ -165,10 +172,26 @@ class Shell {
 	
 	private void newAppointment() {
 		//TODO
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Appointment name: ");
+		String name = sc.nextLine();
 		GregorianCalendar start = askUserStart();
-		start.setMinimalDaysInFirstWeek(4);
-		start.setFirstDayOfWeek(Calendar.MONDAY);
+		GregorianCalendar end = askUserEnd();
+		while (!end.after(start)) {
+			System.out.println("End time must be after start time!");
+			start = askUserStart();
+			end = askUserEnd();
+		}
+		System.out.print("Description: ");
+		String description = sc.nextLine();
+		System.out.print("Location: ");
+		String location = sc.nextLine();
 		System.out.println("week: " + start.get(Calendar.WEEK_OF_YEAR));
+		System.out.println("start: " + makeDateString(start));
+		Appointment a = new Appointment(name, makeDateString(start), makeDateString(end), description, location);
+		File f = xmlC.toXML(a, "appointment");
+		clientSocket.send(f);
+		
 		//Date end = askUserEnd();
 		
 		//Appointment a = new Appointment(start, end, "normal");
@@ -238,13 +261,39 @@ class Shell {
 		int hour = Integer.parseInt(clock[0]);
 		int minute = Integer.parseInt(clock[1]);
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, hour, minute);
+		gc.setMinimalDaysInFirstWeek(4);
+		gc.setFirstDayOfWeek(Calendar.MONDAY);
 		return gc;
-		
 	}
 	
-	private Date askUserEnd() {
+	private GregorianCalendar askUserEnd() {
 		//TODO
-		return null;
+		Scanner sc = new Scanner(System.in);
+		System.out.print("End time (dd.mm.yyyy hh:mm): ");
+		String time = sc.nextLine();
+		boolean dateOK = false;
+		while (!dateOK /* || time = "cancel"*/) {
+			if (isLegalTime(time)) {
+				dateOK = true;
+			} else {
+				System.out.println("Wrong date format!");
+				System.out.print("End time (dd.mm.yyyy hh:mm): ");
+				time = sc.nextLine();
+			}
+		}
+		/* if time == "cancel" ...*/
+		String[] rawList = time.split(" ");
+		String[] date = rawList[0].split("\\.");
+		String[] clock = rawList[1].split(":");
+		int year = Integer.parseInt(date[2]);
+		int month = Integer.parseInt(date[1]) - 1;
+		int day = Integer.parseInt(date[0]);
+		int hour = Integer.parseInt(clock[0]);
+		int minute = Integer.parseInt(clock[1]);
+		GregorianCalendar gc = new GregorianCalendar(year, month, day, hour, minute);
+		gc.setMinimalDaysInFirstWeek(4);
+		gc.setFirstDayOfWeek(Calendar.MONDAY);
+		return gc;
 	}
 	
 	private boolean isLegalTime(String s) {
@@ -266,6 +315,20 @@ class Shell {
 	    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	    sdf.setLenient(false);
 	    return sdf.parse(s, new ParsePosition(0)) != null;
+	}
+	
+	private String makeDateString(GregorianCalendar gc) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(gc.get(Calendar.YEAR));
+		sb.append("-");
+		sb.append(gc.get(Calendar.MONTH));
+		sb.append("-");
+		sb.append(gc.get(Calendar.DAY_OF_MONTH));
+		sb.append(" ");
+		sb.append(gc.get(Calendar.HOUR));
+		sb.append(":");
+		sb.append(gc.get(Calendar.MINUTE));
+		return sb.toString();
 	}
 
 }
