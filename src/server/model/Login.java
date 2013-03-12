@@ -1,4 +1,4 @@
-package client.model;
+package server.model;
 
 public class Login {
 	private final String username;

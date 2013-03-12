@@ -1,9 +1,5 @@
-package client.model;
+package server.model;
 
-<<<<<<< HEAD
-public class Appointment {
-
-=======
 import java.util.Date;
 
 public class Appointment {
@@ -71,5 +67,4 @@ public class Appointment {
 		this.end = end;
 	}
 
->>>>>>> origin/XML
 }
