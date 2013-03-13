@@ -3,6 +3,7 @@ package client.model;
 import java.util.Date;
 
 public class Appointment {
+	//sasasdf
 
 	private String start;
 	private String end;
