@@ -4,27 +4,78 @@ import java.io.*;
 import java.net.*;
 import java.sql.Connection;
 
+import javax.net.SocketFactory;
+import javax.xml.ws.Response;
+
 class ClientSocket {
 	
 	Socket clientSocket = null;
+	
+	private String host;
+	private int port;
+	ObjectOutputStream ous;
+	ObjectInputStream ois;
+	
+	public ClientSocket(String host, int port){
+		this.host = host;
+		this.port = port;
+	}
+	
+	public boolean connect() throws Exception{
+		try {
+			SocketAddress clientAddress = new InetSocketAddress(host,port);
+			SocketFactory factory = SocketFactory.getDefault();
+			clientSocket = factory.createSocket();
+			clientSocket.connect(clientAddress);
+			System.out.println("Client connection open");
+			return true;
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			return false;
+	}
+	}
 
 	
-	public void send(File f) throws IOException{
-		byte[] mybytearray = new byte[1024];
-		ObjectInputStream ois;
+	public boolean send(Object f) throws IOException{
 		try {
-			ois = new ObjectInputStream(clientSocket.getInputStream());
+			ous = new ObjectOutputStream(clientSocket.getOutputStream());
+			ous.writeObject(f);
+			ous.flush();
+			System.out.println("File sent");
+			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));  
-		int bytesRead = ((ObjectInput) out).read(mybytearray, 0, mybytearray.length);
-		out.write(mybytearray, 0, bytesRead);
-		out.close();
-		clientSocket.close();
 	}
 	
+	public Response receiveObject() throws Exception{
+		try{
+			System.out.println("Client waiting for object");
+			ois = new ObjectInputStream(clientSocket.getInputStream());
+			return (Response) ois.readObject();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void closeConnection(){
+		try{
+			if (ois != null)
+				ois.close();
+			if(ous != null)
+				ous.close();
+			if (clientSocket != null)
+				clientSocket.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public static void main(String[] args) throws Exception {
