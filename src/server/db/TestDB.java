@@ -22,8 +22,7 @@ public class TestDB {
 	{
 		DBConnection db=new DBConnection(p);
 		
-		String insert="insert into employee (name,birthYear)" +
-				" values('George',1983)";
+		String insert="insert into person values (6,'frederik', 'frederil@stud.ntnu.no', 'frederil', 'password')";
 		db.initialize();
 		db.makeSingleUpdate(insert);
 		db.close();
@@ -91,7 +90,8 @@ public class TestDB {
 		try {
 			p.load(new FileInputStream(new File("Properties.properties")));
 			//t.readTest(p);
-			t.batchTest(p);
+			//t.batchTest(p);
+			t.test(p);
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
