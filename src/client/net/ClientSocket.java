@@ -11,6 +11,7 @@ class ClientSocket {
 	
 	Socket clientSocket = null;
 	
+	
 	private String host;
 	private int port;
 	ObjectOutputStream ous;
