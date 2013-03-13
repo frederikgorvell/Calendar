@@ -76,13 +76,15 @@ public final class XMLConverter {
 					.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse(filename);
+			
 			doc.getDocumentElement().normalize();
 
 			System.out.println("Root element :"
 					+ doc.getDocumentElement().getNodeName());
+			
 			switch (doc.getDocumentElement().getNodeName()) {
 			case "Login":
-				return handlLogin(doc);
+				return handlLogin(doc);//
 
 			case "Appointment":
 				break;
@@ -94,8 +96,8 @@ public final class XMLConverter {
 				break;
 
 			}
-
-		} catch (Exception e) {// Catch exception if any
+			return null;
+		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return null;
 		}
