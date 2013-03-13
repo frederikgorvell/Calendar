@@ -10,6 +10,10 @@ public class Appointment {
 	private String status;
 	private String location;
 
+	public Appointment() {
+		
+	}
+	
 	public Appointment(Date start, Date end, String status) {
 		super();
 		this.start = start;
