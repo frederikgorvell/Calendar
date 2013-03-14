@@ -3,10 +3,10 @@ package client.ui;
 import client.net.ClientConnection;
 
 public class Client {
-
-	public static void main(String[] args) throws Exception
-	{
-		new UserInterface("localhost", 12467);
+	private final static int port = 12467;
+	
+	public static void main(String[] args) throws Exception {
+		new UserInterface("localhost", port);
 		//login();
 	}
 
