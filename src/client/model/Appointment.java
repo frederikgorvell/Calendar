@@ -4,27 +4,37 @@ import java.util.Date;
 
 public class Appointment {
 
+	private int AID = -1;
+	private String name;
 	private String start;
 	private String end;
 	private int week;
 	private String description;
 	private String location;
-	private String name;
-
+	
+	public Appointment(int AID) {
+		this.AID = AID;
+	}
+	
 	public Appointment(String start, String end) {
-		super();
 		this.start = start;
 		this.end = end;
 	}
 
-	public Appointment(String name, String start, String end, String description,
-			String location) {
-		super();
+	public Appointment(String name, String start, String end, String description, String location) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.description = description;
 		this.location = location;
+	}
+	
+	public void setAID(int AID) {
+		this.AID = AID;
+	}
+	
+	public int getAID() {
+		return AID;
 	}
 
 	public String getDescription() {

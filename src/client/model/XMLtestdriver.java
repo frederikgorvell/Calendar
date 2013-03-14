@@ -1,7 +1,11 @@
 package client.model;
 
+
 import java.io.File;
 import java.io.FileWriter;
+
+import shared.XMLConverter;
+
 
 public class XMLtestdriver {
 

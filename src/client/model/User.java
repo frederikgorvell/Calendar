@@ -8,7 +8,6 @@ public class User {
 	private String email;
 	private String username;
 	private String password;
-	XMLConverter converter = new XMLConverter();
 	
 	public User(int id, String name, String email, String username, String password) {	
 		this.id = id;
@@ -16,7 +15,6 @@ public class User {
 		this.email = email;
 		this.username = username;
 		this.password = password;
-		converter.toXML(this);
 	}
 	
 	public int getId() {

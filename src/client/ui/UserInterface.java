@@ -1,5 +1,6 @@
 package client.ui;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParsePosition;
@@ -8,23 +9,23 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
+import shared.XMLConverter;
+
 import client.model.Appointment;
 import client.model.Login;
-import client.model.XMLConverter;
 import client.net.SocketClient;
 
 public class UserInterface {
 	
-	private XMLConverter xmlc;
 	private Scanner scan;
 	private String hostAddr;
 	private int port;
-	private SocketClient cc;
+	private SocketClient clientSocket;
 	
 	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
 		this.hostAddr = hostAddr;
 		this.port = port;
-		xmlc = new XMLConverter();
+//		xmlc = new XMLConverter();
 		scan = new Scanner(System.in);
 		boolean loginOK = false;
 		while (!loginOK) {
@@ -38,9 +39,9 @@ public class UserInterface {
 	
 	private boolean login() {
 		System.out.println("Client started...");
-		cc = new SocketClient(hostAddr, port);
+		clientSocket = new SocketClient(hostAddr, port);
 
-		boolean connection = cc.openConnection();
+		boolean connection = clientSocket.openConnection();
 
 		if (connection) {
 			System.out.print("Enter username: ");
@@ -49,9 +50,10 @@ public class UserInterface {
 			String password = scan.nextLine();
 			
 			Login login = new Login(username, password);
-			File loginFile = xmlc.toXML(login, "login.xml");
-			cc.send(loginFile);
-			File receive = cc.receiveObject();
+			File loginFile = XMLConverter.toXML(login, "login.xml");
+//			File loginFile = xmlc.toXML(login, "login.xml");
+			clientSocket.send(loginFile);
+			File receive = clientSocket.receiveObject();
 			return true;
 			
 			/*
@@ -86,6 +88,14 @@ public class UserInterface {
 	//public static void main(String[] args) throws Exception /* CHANGE! */ {
 		//new UserInterface();
 	//}
+	
+	class ReceiverThread extends Thread {
+		//receive from server, alternate ask for updates on invites etc
+		//don't know if i need multiple SocketClient
+		public void run() {
+			
+		}
+	}
 
 
 	class UserInput {
@@ -179,9 +189,19 @@ public class UserInterface {
 			} else if (userInput.command.equals("previous")) {
 				//TODO
 			} else if (userInput.command.equals("new")) {
-				newAppointment();
+				if(newAppointment()) {
+					System.out.println("Appointment created");
+				}
 			} else if (userInput.command.equals("delete")) {
-				//TODO
+				try {
+					if (deleteAppointment(Integer.parseInt(a1))) {
+						System.out.println("Appointment deleted!");
+					} else {
+						System.out.println("Could not delete appointment!");
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid appointmentID, must be a number!");
+				}
 			} else if (userInput.command.equals("view")) {
 				//TODO
 			} else if (userInput.command.equals("edit")) {
@@ -210,7 +230,7 @@ public class UserInterface {
 			}
 		}
 		
-		private void newAppointment() {
+		private boolean newAppointment() {
 			//TODO
 			System.out.print("Appointment name: ");
 			String name = scan.nextLine();
@@ -230,8 +250,24 @@ public class UserInterface {
 			Appointment a = new Appointment(name, makeDateString(start), makeDateString(end), description, location);
 			a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 		
-			File f = xmlc.toXML(a, "Appointment.xml");
-			clientSocket.send(f);
+			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "new");
+			clientSocket.send(sendFile);
+			File receiveFile = clientSocket.receiveObject();
+			a.setAID(XMLConverter.getAID(receiveFile));
+			if (a.getAID() == -1) {
+				System.out.println("AID = -1");/////////////////////////////////////
+				return false;
+			}
+			return XMLConverter.isConfirmed(receiveFile);
+			
+		}
+		
+		private boolean deleteAppointment(int AID) {
+			Appointment a = new Appointment(AID);
+			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "delete");
+			clientSocket.send(sendFile);
+			File receiveFile = clientSocket.receiveObject();
+			return XMLConverter.isConfirmed(receiveFile);
 		}
 		
 		private GregorianCalendar askUserStart() {
