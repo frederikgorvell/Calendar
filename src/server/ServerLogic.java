@@ -9,7 +9,7 @@ public class ServerLogic {
 	 * hinders the server from returning the expected data.
 	 * 
 	 * @param request - Containing the relevant information regarding the request.
-	 * @return Response - Containg relevant information to be returned to the client.
+	 * @return Response - Containing relevant information to be returned to the client.
 	 */
 	public static File handleRequest(File request) {
 //		Response response = new Response();
