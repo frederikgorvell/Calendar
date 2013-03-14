@@ -25,7 +25,8 @@ public class UserInterface {
 		scan = new Scanner(System.in);
 		boolean loginOK = false;
 		while (!loginOK) {
-			loginOK = login();
+			//loginOK = login();
+			loginOK = loginPrompt();
 		}
 		ClientSocket cs = new ClientSocket();
 		new Shell(cs);
