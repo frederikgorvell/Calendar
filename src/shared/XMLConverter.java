@@ -74,6 +74,18 @@ public class XMLConverter {
 		}
 	}
 	
+	public static File makeConfirmed(int AID) {
+		StringBuffer s = new StringBuffer();
+		final String type = "Confirmed";
+
+		s.append(XML_VERSION_ENCODING);
+		s.append("<" + type + ">");
+		s = addTag(s, "AID", AID + "");
+		s.append("</" + type + ">");
+
+		return toFile(s, "confirmed.xml");
+	}
+	
 	Object readXMLintoObject (String filename){
 		try {
 //			FileReader fstream = new FileReader(filename); // Create file

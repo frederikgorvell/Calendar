@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Login>
-<Username>martin</Username>
-<Password>12345678</Password>
+<Login><Username>klo</Username>
+<Password>pass</Password>
 </Login>

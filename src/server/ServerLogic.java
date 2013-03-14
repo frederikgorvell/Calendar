@@ -10,6 +10,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import shared.XMLConverter;
+
 public class ServerLogic {
 	/**
 	 * Handles all client requests based on the request field in the Request object.
@@ -29,9 +31,30 @@ public class ServerLogic {
 		String type = doc.getDocumentElement().getNodeName();
 		
 		if (type.equals("Login")) {
+			//TODO db
+			return XMLConverter.makeConfirmed(1);
 			
 		} else if (type.equals("Appointment")) {
 			
+			
+			NodeList nodes = doc.getElementsByTagName("Appointment");
+			Node node = nodes.item(0);
+			Element element = (Element) node;
+			String spec = getValue("Specification", element);
+			
+			if (spec.equals("new")) {
+				
+			} else if (spec.equals("delete")) {
+				
+			} else if (spec.equals("edit")) {
+				
+			} else if (spec.equals("show")) {
+				
+			} else if (spec.equals("showOther")) {
+				
+			} else if (spec.equals("week")) {
+				
+			}
 		}
 		
 		System.out.println("root of xml file" + doc.getDocumentElement().getNodeName());

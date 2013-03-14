@@ -29,8 +29,8 @@ public class UserInterface {
 		scan = new Scanner(System.in);
 		boolean loginOK = false;
 		while (!loginOK) {
-			//loginOK = login();
-			loginOK = loginPrompt();
+			loginOK = login();
+//			loginOK = loginPrompt();
 		}
 		
 //		ClientSocket cs = new ClientSocket();
@@ -191,6 +191,8 @@ public class UserInterface {
 			} else if (userInput.command.equals("new")) {
 				if(newAppointment()) {
 					System.out.println("Appointment created");
+				} else {
+					System.out.println("Error in creating an appointment");
 				}
 			} else if (userInput.command.equals("delete")) {
 				try {
