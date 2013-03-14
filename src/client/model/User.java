@@ -6,16 +6,14 @@ public class User {
 	private final int id;
 	private String name;
 	private String email;
-	private int phonenumber;
 	private String username;
 	private String password;
 	XMLConverter converter = new XMLConverter();
 	
-	public User(int id, String name, String email, int phonenumber, String username, String password) {	
+	public User(int id, String name, String email, String username, String password) {	
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.phonenumber = phonenumber;
 		this.username = username;
 		this.password = password;
 		converter.toXML(this);
@@ -39,14 +37,6 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public int getPhonenumber() {
-		return phonenumber;
-	}
-
-	public void setPhonenumber(int phonenumber) {
-		this.phonenumber = phonenumber;
 	}
 
 	public String getUsername() {
