@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -136,7 +137,7 @@ public class XMLConverter {
 				NodeList nodes = doc.getElementsByTagName("Confirmed");
 				Node node = nodes.item(0);
 				Element element = (Element) node;
-				return Integer.parseInt(((Node) element.getElementsByTagName("AID").item(0).getChildNodes().item(0)).getNodeValue());
+				return Integer.parseInt(getValue("AID", element));
 				
 			} else {
 				return -1;
@@ -145,5 +146,48 @@ public class XMLConverter {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	public static ArrayList<Appointment> makeAppointment(File received) {
+		//liste kanskje
+		try {
+			ArrayList<Appointment> appList = new ArrayList<Appointment>();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(received);
+			doc.getDocumentElement().normalize();
+
+			NodeList nodes = doc.getElementsByTagName("Appointment");
+	
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node node = nodes.item(i);
+		
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) node;
+					
+					int AID = Integer.parseInt(getValue("AID", element));
+					String name = getValue("Name", element);
+					String start = getValue("Start", element);
+					String end = getValue("End", element);
+					int week = Integer.parseInt(getValue("Week", element));
+					String desc = getValue("Description", element);
+					String loc = getValue("Location", element);
+					
+					Appointment a = new Appointment(name, start, end, desc, loc);
+					a.setWeek(week);
+					appList.add(a);
+				}
+			}
+			return appList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static String getValue(String tag, Element element) {
+		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+		Node node = (Node) nodes.item(0);
+		return node.getNodeValue();
 	}
 }

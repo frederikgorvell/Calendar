@@ -205,9 +205,25 @@ public class UserInterface {
 					System.out.println("Invalid appointmentID, must be a number!");
 				}
 			} else if (userInput.command.equals("view")) {
-				//TODO
+				try {
+					Appointment a = getAppointment(Integer.parseInt(a1));
+					if (a == null) {
+						System.out.println("Can't view appointment with appointmentID=" + a1);
+					}
+					viewAppointment(a);
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid appointmentID, must be a number!");
+				}
 			} else if (userInput.command.equals("edit")) {
-				//TODO
+				try {
+					if (editAppointment(Integer.parseInt(a1))) {
+						System.out.println("Appointment successfully edited!");
+					} else {
+						System.out.println("Could not edit appointment!");
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid appointmentID, must be a number!");
+				}
 			} else if (userInput.command.equals("book")) {
 				//TODO
 			} else if (userInput.command.equals("invite")) {
@@ -236,12 +252,12 @@ public class UserInterface {
 			//TODO
 			System.out.print("Appointment name: ");
 			String name = scan.nextLine();
-			GregorianCalendar start = askUserStart();
-			GregorianCalendar end = askUserEnd();
+			GregorianCalendar start = askUserStart(false);
+			GregorianCalendar end = askUserEnd(false);
 			while (!end.after(start)) {
 				System.out.println("End time must be after start time!");
-				start = askUserStart();
-				end = askUserEnd();
+				start = askUserStart(false);
+				end = askUserEnd(false);
 			}
 			System.out.print("Description: ");
 			String description = scan.nextLine();
@@ -272,12 +288,94 @@ public class UserInterface {
 			return XMLConverter.isConfirmed(receiveFile);
 		}
 		
-		private GregorianCalendar askUserStart() {
+		private Appointment getAppointment(int AID) {
+			Appointment a = new Appointment(AID);
+			
+			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "view");
+			clientSocket.send(sendFile);
+			File receiveFile = clientSocket.receiveObject();
+			a = XMLConverter.makeAppointment(receiveFile).get(0);
+			return a;
+		}
+		
+		private void viewAppointment(Appointment a) {
+			if (a != null) {
+				System.out.println("AppointmentID: " + a.getAID());
+				System.out.println("Name: " + a.getName());
+				System.out.println("Start: " + a.getStart());
+				System.out.println("End: " + a.getEnd());
+				System.out.println("Week: " + a.getWeek());
+				System.out.println("Description: " + a.getDescription());
+				System.out.println("Location: " + a.getLocation());
+			}
+		}
+		
+		private boolean editAppointment(int AID) {
+			Appointment a = getAppointment(AID);
+			if (a == null) return false;
+			viewAppointment(a);
+			System.out.println("Submit attributes to be changed, just press enter for attributes not to be changed");
+			System.out.print("Appointment name: ");
+			String name = scan.nextLine();
+			if (name != null) {
+				a.setName(name);
+			}
+			GregorianCalendar start = askUserStart(true);
+			if (start != null) {
+				a.setStart(makeDateString(start));
+			}
+			GregorianCalendar end = askUserEnd(true);
+			if (end != null) {
+				a.setEnd(makeDateString(end));
+			}
+			while (!end.after(start)) {
+				System.out.println("End time must be after start time!");
+				start = askUserStart(true);
+				if (start != null) {
+					a.setStart(makeDateString(start));
+				}
+				end = askUserEnd(true);
+				if (end != null) {
+					a.setEnd(makeDateString(end));
+				}
+			}
+			System.out.print("Description: ");
+			String desc = scan.nextLine();
+			if (desc != null) {
+				a.setDescription(desc);
+			}
+			System.out.print("Location: ");
+			String location = scan.nextLine();
+			if (location != null) {
+				a.setLocation(location);
+			}
+			if (start.get(Calendar.WEEK_OF_YEAR) != a.getWeek()) {
+				a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
+			}
+		
+			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "edit");
+			clientSocket.send(sendFile);
+			File receiveFile = clientSocket.receiveObject();
+			return XMLConverter.isConfirmed(receiveFile);
+			/*
+			a.setAID(XMLConverter.getAID(receiveFile));
+			if (a.getAID() == -1) {
+				System.out.println("AID = -1");/////////////////////////////////////
+				return false;
+			}
+			return XMLConverter.isConfirmed(receiveFile);
+			return false;*/
+		}
+		
+		private GregorianCalendar askUserStart(boolean edit) {
 			//TODO
 			System.out.print("Start time (dd.mm.yyyy hh:mm): ");
 			String time = scan.nextLine();
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
+				if (edit && time == null) {
+					return null;
+				}
 				if (isLegalTime(time)) {
 					dateOK = true;
 				} else {
@@ -301,12 +399,16 @@ public class UserInterface {
 			return gc;
 		}
 		
-		private GregorianCalendar askUserEnd() {
+		private GregorianCalendar askUserEnd(boolean edit) {
 			//TODO
 			System.out.print("End time (dd.mm.yyyy hh:mm): ");
 			String time = scan.nextLine();
+			
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
+				if (edit && time == null) {
+					return null;
+				}
 				if (isLegalTime(time)) {
 					dateOK = true;
 				} else {

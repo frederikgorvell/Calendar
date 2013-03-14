@@ -40,7 +40,7 @@ public class ServerLogic {
 			NodeList nodes = doc.getElementsByTagName("Appointment");
 			Node node = nodes.item(0);
 			Element element = (Element) node;
-			String spec = getValue("Specification", element);
+			String spec = XMLConverter.getValue("Specification", element);
 			
 			if (spec.equals("new")) {
 				
@@ -48,9 +48,9 @@ public class ServerLogic {
 				
 			} else if (spec.equals("edit")) {
 				
-			} else if (spec.equals("show")) {
+			} else if (spec.equals("view")) {
 				
-			} else if (spec.equals("showOther")) {
+			} else if (spec.equals("viewOther")) {
 				
 			} else if (spec.equals("week")) {
 				
@@ -65,8 +65,8 @@ public class ServerLogic {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 			Element element = (Element) node;
-			System.out.println("Login Username: " + getValue("Username", element));
-			System.out.println("Login Password: " + getValue("Password", element));
+			System.out.println("Login Username: " + XMLConverter.getValue("Username", element));
+			System.out.println("Login Password: " + XMLConverter.getValue("Password", element));
 			}
 		}
 
@@ -106,11 +106,11 @@ public class ServerLogic {
 		return null;		
 	}
 	
-	private static String getValue(String tag, Element element) {
+	/*private static String getValue(String tag, Element element) {
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
-	}
+	}*/
 	
 
 	
