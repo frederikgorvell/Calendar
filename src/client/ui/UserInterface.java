@@ -8,36 +8,84 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import client.model.*;
-import client.net.*;
+import client.model.Appointment;
+import client.model.Login;
+import client.model.XMLConverter;
+import client.net.SocketClient;
 
 public class UserInterface {
 	
-	public UserInterface() throws Exception /* CHANGE! */{
+	private XMLConverter xmlc;
+	private Scanner scan;
+	private String hostAddr;
+	private int port;
+	private SocketClient cc;
+	
+	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
+		this.hostAddr = hostAddr;
+		this.port = port;
+		xmlc = new XMLConverter();
+		scan = new Scanner(System.in);
 		boolean loginOK = false;
 		while (!loginOK) {
+			//loginOK = login();
 			loginOK = loginPrompt();
 		}
-		ClientSocket cs = new ClientSocket();
-		new Shell(cs);
+		
+//		ClientSocket cs = new ClientSocket();
+		new Shell();
+	}
+	
+	private boolean login() {
+		System.out.println("Client started...");
+		cc = new SocketClient(hostAddr, port);
+
+		boolean connection = cc.openConnection();
+
+		if (connection) {
+			System.out.print("Enter username: ");
+			String username = scan.nextLine();
+			System.out.print("Enter password: ");
+			String password = scan.nextLine();
+			
+			Login login = new Login(username, password);
+			File loginFile = xmlc.toXML(login, "login.xml");
+			cc.send(loginFile);
+			File receive = cc.receiveObject();
+			return true;
+			
+			/*
+			Request request = new Request();
+			request.setRequest(Request.LOGIN);
+			request.addItem("username", "herpderp@gmail.com");
+			request.addItem("password", "passord");
+			cc.sendObject(request);
+			Response response = cc.reciveObject();
+			cc.closeConnection();
+			System.out.println("error " + response.getItem("error"));
+			System.out.println("result:" + " " + response.getItem("result"));
+			*/
+		}
+		return false;
+		
+		
 	}
 	
 	private boolean loginPrompt() {
-		Scanner term = new Scanner(System.in);
 		System.out.print("Enter username: ");
-		String username = term.nextLine();
+		String username = scan.nextLine();
 		System.out.print("Enter password: ");
-		String password = term.nextLine();
-		Login log = new Login(username, password);
+		String password = scan.nextLine();
+		Login login = new Login(username, password);
 		/*if (isCorrect(log)) {
 			return true;
 		}*/
 		return true;
 	}
 	
-	public static void main(String[] args) throws Exception /* CHANGE! */ {
-		new UserInterface();
-	}
+	//public static void main(String[] args) throws Exception /* CHANGE! */ {
+		//new UserInterface();
+	//}
 
 
 	class UserInput {
@@ -55,12 +103,14 @@ public class UserInterface {
 		String command;
 		String argument1;
 		String argument2;
+
 		Scanner terminal = new Scanner(System.in);
 		boolean hasMoreCommands() {
-			return terminal.hasNextLine();
+			return scan.hasNextLine();
 		}
 		UserInput nextCommand() {
-			String[] line = terminal.nextLine().split(" ");
+			String[] line = scan.nextLine().split(" ");
+
 			
 			if (line == null || line[0] == null || line[0].isEmpty()) {
 				command = "help";
@@ -90,12 +140,7 @@ public class UserInterface {
 	
 	class Shell {
 		CommandFeed cli	= new CommandFeed();
-		private XMLConverter xmlC;
-		private ClientSocket clientSocket;
-	
-		Shell(ClientSocket clientSocket) throws IOException {
-			this.clientSocket = clientSocket;
-			xmlC = new XMLConverter();
+		Shell() throws IOException {
 			printInputPrefix();
 			while(cli.hasMoreCommands()) {
 				handleUserInput();
@@ -167,9 +212,8 @@ public class UserInterface {
 		
 		private void newAppointment() {
 			//TODO
-			Scanner sc = new Scanner(System.in);
 			System.out.print("Appointment name: ");
-			String name = sc.nextLine();
+			String name = scan.nextLine();
 			GregorianCalendar start = askUserStart();
 			GregorianCalendar end = askUserEnd();
 			while (!end.after(start)) {
@@ -178,23 +222,22 @@ public class UserInterface {
 				end = askUserEnd();
 			}
 			System.out.print("Description: ");
-			String description = sc.nextLine();
+			String description = scan.nextLine();
 			System.out.print("Location: ");
-			String location = sc.nextLine();
+			String location = scan.nextLine();
 			System.out.println("week: " + start.get(Calendar.WEEK_OF_YEAR));
 			System.out.println("start: " + makeDateString(start));
 			Appointment a = new Appointment(name, makeDateString(start), makeDateString(end), description, location);
 			a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
-			
-			File f = xmlC.toXML(a, "appointment");
+		
+			File f = xmlc.toXML(a, "Appointment.xml");
 			clientSocket.send(f);
 		}
 		
 		private GregorianCalendar askUserStart() {
 			//TODO
-			Scanner sc = new Scanner(System.in);
 			System.out.print("Start time (dd.mm.yyyy hh:mm): ");
-			String time = sc.nextLine();
+			String time = scan.nextLine();
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
 				if (isLegalTime(time)) {
@@ -202,7 +245,7 @@ public class UserInterface {
 				} else {
 					System.out.println("Wrong date format!");
 					System.out.print("Start time (dd.mm.yyyy hh:mm): ");
-					time = sc.nextLine();
+					time = scan.nextLine();
 				}
 			}
 			/* if time == "cancel" ...*/
@@ -222,9 +265,8 @@ public class UserInterface {
 		
 		private GregorianCalendar askUserEnd() {
 			//TODO
-			Scanner sc = new Scanner(System.in);
 			System.out.print("End time (dd.mm.yyyy hh:mm): ");
-			String time = sc.nextLine();
+			String time = scan.nextLine();
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
 				if (isLegalTime(time)) {
@@ -232,7 +274,7 @@ public class UserInterface {
 				} else {
 					System.out.println("Wrong date format!");
 					System.out.print("End time (dd.mm.yyyy hh:mm): ");
-					time = sc.nextLine();
+					time = scan.nextLine();
 				}
 			}
 			/* if time == "cancel" ...*/
