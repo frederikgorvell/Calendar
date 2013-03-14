@@ -8,8 +8,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import client.model.*;
-import client.net.*;
+import client.model.Appointment;
+import client.model.Login;
+import client.model.XMLConverter;
+import client.net.SocketClient;
 
 public class UserInterface {
 	
@@ -17,6 +19,7 @@ public class UserInterface {
 	private Scanner scan;
 	private String hostAddr;
 	private int port;
+	private SocketClient cc;
 	
 	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
 		this.hostAddr = hostAddr;
@@ -28,13 +31,14 @@ public class UserInterface {
 			//loginOK = login();
 			loginOK = loginPrompt();
 		}
-		ClientSocket cs = new ClientSocket();
-		new Shell(cs);
+		
+//		ClientSocket cs = new ClientSocket();
+		new Shell();
 	}
 	
 	private boolean login() {
 		System.out.println("Client started...");
-		ClientConnection cc = new ClientConnection(hostAddr, port);
+		cc = new SocketClient(hostAddr, port);
 
 		boolean connection = cc.openConnection();
 
@@ -45,9 +49,9 @@ public class UserInterface {
 			String password = scan.nextLine();
 			
 			Login login = new Login(username, password);
-			File send = xmlc.toXML(login, "login.xml");
-			cc.sendObject(send);
-			File recieve = cc.receiveObject();
+			File loginFile = xmlc.toXML(login, "login.xml");
+			cc.send(loginFile);
+			File receive = cc.receiveObject();
 			return true;
 			
 			/*
@@ -72,7 +76,7 @@ public class UserInterface {
 		String username = scan.nextLine();
 		System.out.print("Enter password: ");
 		String password = scan.nextLine();
-		Login log = new Login(username, password);
+		Login login = new Login(username, password);
 		/*if (isCorrect(log)) {
 			return true;
 		}*/
@@ -133,12 +137,8 @@ public class UserInterface {
 	
 	class Shell {
 		CommandFeed cli	= new CommandFeed();
-		private XMLConverter xmlC;
-		private ClientSocket clientSocket;
 	
-		Shell(ClientSocket clientSocket) throws IOException {
-			this.clientSocket = clientSocket;
-			xmlC = new XMLConverter();
+		Shell() throws IOException {
 			printInputPrefix();
 			while(cli.hasMoreCommands()) {
 				handleUserInput();
@@ -229,7 +229,7 @@ public class UserInterface {
 			Appointment a = new Appointment(name, makeDateString(start), makeDateString(end), description, location);
 			a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 			
-			File f = xmlC.toXML(a, "appointment");
+			File f = xmlc.toXML(a, "Appointment.xml");
 			clientSocket.send(f);
 		}
 		

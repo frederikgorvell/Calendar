@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientConnection {	
+public class SocketClient {	
 	
 	private String host;
 	private int port;
@@ -14,7 +14,7 @@ public class ClientConnection {
 	
 	private Socket socket;
 	
-	public ClientConnection(String host, int port) {	
+	public SocketClient(String host, int port) {	
 		this.host = host;
 		this.port = port;
 	}
