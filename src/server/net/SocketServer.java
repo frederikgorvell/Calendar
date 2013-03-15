@@ -4,10 +4,12 @@ import java.net.Socket;
 import java.net.ServerSocket;
 
 public class SocketServer extends Thread {	
-	public int port;
+	private int port;
+//	private DBConnection db;
 	
-	public SocketServer(int port) {
+	public SocketServer(int port/*, DBConnection db*/) {
 		this.port = port;
+//		this.db = db;
 	}
 	
 	public void run() {
@@ -17,7 +19,7 @@ public class SocketServer extends Thread {
 	        System.out.println("Client handler started...");
 	        while(true) {
 	        	Socket socket = serversocket.accept();
-	        	Session session = new Session(socket,id++);
+	        	Session session = new Session(socket, id++/*, db*/);
 	        	session.start();
 	        }    
 		}

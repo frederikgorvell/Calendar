@@ -22,7 +22,7 @@ public class ServerLogic {
 	 * @return Response - Containing relevant information to be returned to the client.
 	 */
 	public static File handleRequest(File request) throws Exception {
-		
+		if (request == null) return null;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(request);
@@ -39,24 +39,32 @@ public class ServerLogic {
 			
 			NodeList nodes = doc.getElementsByTagName("Appointment");
 			Node node = nodes.item(0);
+
 			Element element = (Element) node;
+
+			String username = XMLConverter.getValue("Username", element);
 			String spec = XMLConverter.getValue("Specification", element);
 			
 			if (spec.equals("new")) {
-				
+				return XMLConverter.makeConfirmed(0);
+				//TODO
 			} else if (spec.equals("delete")) {
-				
+				//TODO
 			} else if (spec.equals("edit")) {
-				
+				//TODO
 			} else if (spec.equals("view")) {
-				
+				//TODO
+				//return request;
 			} else if (spec.equals("viewOther")) {
-				
+				//TODO
 			} else if (spec.equals("week")) {
-				
+				//TODO
 			}
+		} else if (type.equals("Invite")) {
+			return XMLConverter.makeConfirmed(0);
+			//TODO
 		}
-		
+		/*
 		System.out.println("root of xml file" + doc.getDocumentElement().getNodeName());
 		NodeList nodes = doc.getElementsByTagName("Login");
 		
@@ -69,7 +77,7 @@ public class ServerLogic {
 			System.out.println("Login Password: " + XMLConverter.getValue("Password", element));
 			}
 		}
-
+		*/
 
 		/*
 //		Response response = new Response();

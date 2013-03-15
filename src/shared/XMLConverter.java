@@ -41,7 +41,8 @@ public class XMLConverter {
 
 		s.append(XML_VERSION_ENCODING);
 		s.append("<" + type + ">");
-		s = addTag(s, "Specificaton", spec);
+		s = addTag(s, "Username", appointment.getCreator());
+		s = addTag(s, "Specification", spec);
 		s = addTag(s, "AID", appointment.getAID() + "");
 		s = addTag(s, "Name", appointment.getName());
 		s = addTag(s, "Start", appointment.getStart());
@@ -52,6 +53,19 @@ public class XMLConverter {
 		s.append("</" + type + ">");
 
 		return toFile(s, filename);
+	}
+	
+	public static File makeInvite(int AID, String invitedUser) {
+		StringBuffer s = new StringBuffer();
+		final String type = "Invite";
+
+		s.append(XML_VERSION_ENCODING);
+		s.append("<" + type + ">");
+		s = addTag(s, "AID", AID + "");
+		s = addTag(s, "InvitedUser", invitedUser);
+		s.append("</" + type + ">");
+
+		return toFile(s, "invite.xml");
 	}
 
 	private static StringBuffer addTag(StringBuffer s, String tagName, String tagContent) {
@@ -85,6 +99,18 @@ public class XMLConverter {
 		s.append("</" + type + ">");
 
 		return toFile(s, "confirmed.xml");
+	}
+	
+	public static File makeFailed(String message) {
+		StringBuffer s = new StringBuffer();
+		final String type = "Failed";
+
+		s.append(XML_VERSION_ENCODING);
+		s.append("<" + type + ">");
+		s = addTag(s, "Message", message);
+		s.append("</" + type + ">");
+
+		return toFile(s, "failed.xml");
 	}
 	
 	Object readXMLintoObject (String filename){
@@ -186,8 +212,12 @@ public class XMLConverter {
 	}
 	
 	public static String getValue(String tag, Element element) {
-		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
-		Node node = (Node) nodes.item(0);
-		return node.getNodeValue();
+		try {
+			NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+			Node node = (Node) nodes.item(0);
+			return node.getNodeValue();
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 }

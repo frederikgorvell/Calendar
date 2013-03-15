@@ -21,6 +21,7 @@ public class UserInterface {
 	private String hostAddr;
 	private int port;
 	private SocketClient clientSocket;
+	private String username;
 	
 	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
 		this.hostAddr = hostAddr;
@@ -45,7 +46,7 @@ public class UserInterface {
 
 		if (connection) {
 			System.out.print("Enter username: ");
-			String username = scan.nextLine();
+			username = scan.nextLine();
 			System.out.print("Enter password: ");
 			String password = scan.nextLine();
 			
@@ -53,8 +54,8 @@ public class UserInterface {
 			File loginFile = XMLConverter.toXML(login, "login.xml");
 //			File loginFile = xmlc.toXML(login, "login.xml");
 			clientSocket.send(loginFile);
-			File receive = clientSocket.receiveObject();
-			return true;
+			File received = clientSocket.receiveObject();
+			return XMLConverter.isConfirmed(received);
 			
 			/*
 			Request request = new Request();
@@ -227,6 +228,18 @@ public class UserInterface {
 			} else if (userInput.command.equals("book")) {
 				//TODO
 			} else if (userInput.command.equals("invite")) {
+				try {
+					System.out.print("Username to invite: ");
+					String invitedUser = scan.nextLine();
+					if (invite(Integer.parseInt(a1), invitedUser)) {
+						System.out.println(invitedUser + " invited to appointment " + a1);
+					} else {
+						System.out.println("Could not invite " + invitedUser + " to appointment " + a1);
+					}
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Invalid appointmentID, must be a number!");
+				}
 				//TODO
 			} else if (userInput.command.equals("help")) {
 				System.out.println("Available commands:");
@@ -240,9 +253,11 @@ public class UserInterface {
 				System.out.println("  book <appointmentID> <extraSeats>	- make a reservation for a meeting room");
 				System.out.println("  invite <appointmentID>			- invite users to a meeting");
 				System.out.println("  help								- display this helpscreen");
-				/*System.out.println("  exit						        - exit program");
+				System.out.println("  exit						        - exit program");
 			} else if (userInput.command.equals("exit")) {
-				System.exit(0);*/
+				clientSocket.closeConnection();
+				System.out.println("Connection closed");
+				System.exit(0);
 			} else {
 				System.out.println("Invalid command!");
 			}
@@ -266,6 +281,7 @@ public class UserInterface {
 			System.out.println("week: " + start.get(Calendar.WEEK_OF_YEAR));
 			System.out.println("start: " + makeDateString(start));
 			Appointment a = new Appointment(name, makeDateString(start), makeDateString(end), description, location);
+			a.setCreator(username);
 			a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 		
 			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "new");
@@ -313,6 +329,7 @@ public class UserInterface {
 		private boolean editAppointment(int AID) {
 			Appointment a = getAppointment(AID);
 			if (a == null) return false;
+			a.setCreator(username);
 			viewAppointment(a);
 			System.out.println("Submit attributes to be changed, just press enter for attributes not to be changed");
 			System.out.print("Appointment name: ");
@@ -365,6 +382,13 @@ public class UserInterface {
 			}
 			return XMLConverter.isConfirmed(receiveFile);
 			return false;*/
+		}
+		
+		private boolean invite(int AID, String invitedUser) {
+			File sendFile = XMLConverter.makeInvite(AID, invitedUser);
+			clientSocket.send(sendFile);
+			File receiveFile = clientSocket.receiveObject();
+			return XMLConverter.isConfirmed(receiveFile);
 		}
 		
 		private GregorianCalendar askUserStart(boolean edit) {

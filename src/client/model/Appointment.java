@@ -1,9 +1,8 @@
 package client.model;
 
-import java.util.Date;
-
 public class Appointment {
 
+	private String creator;
 	private int AID = -1;
 	private String name;
 	private String start;
@@ -27,6 +26,14 @@ public class Appointment {
 		this.end = end;
 		this.description = description;
 		this.location = location;
+	}
+	
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	
+	public String getCreator() {
+		return creator;
 	}
 	
 	public void setAID(int AID) {

@@ -7,7 +7,8 @@ public class Server {
 	
 	public static void main(String[] args) {	
 		System.out.println("Starting server...");
-		SocketServer sc = new SocketServer(port);
+		//DBConnection db = new DBConnection();
+		SocketServer sc = new SocketServer(port/*, db*/);
 		sc.start();
 	}
 }

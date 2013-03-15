@@ -2,10 +2,15 @@ package server.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import databaseConnection.DBConnection;
+import server.db.databaseConnection.DBConnection;
 import client.model.User;
 
 public class DBUser {
+	private DBConnection db;
+	
+	public DBUser(DBConnection conn) {
+		this.db = db;
+	}
 	
 	public User createObject(ResultSet rs) {
 		User user;
@@ -26,7 +31,7 @@ public class DBUser {
 	
 	public void addUser(int id, String name, String email, String username, String password) {
 		String query = "INSERT INTO PERSON VALUES ('" + id + "','" + name + "','" + email + "','" + username + "','" + password + "')";
-		DBConnection.makeSingleUpdate(query);
+		db.makeSingleUpdate(query);
 	}
 	
 	public void addUser(User u) {
@@ -35,7 +40,7 @@ public class DBUser {
 	
 	public void deleteUser(String username) {
 		String query = "DELETE FROM PERSON WHERE username like '" + username + "'";
-		DBConnection.makeSingleUpdate(query);
+		db.makeSingleUpdate(query);
 	}
 	
 	public void editUser(User editedUser) {
@@ -44,12 +49,12 @@ public class DBUser {
 				"', username = '"+ editedUser.getUsername() +
 				"', password = '"+ editedUser.getPassword() + 
 				"' WHERE username like '" + editedUser.getUsername()+ "'";
-		DBConnection.makeSingleUpdate(query);
+		db.makeSingleUpdate(query);
 	}
 	
 	public User getUser(String username) {
 		String query = "SELECT * FROM PERSON WHERE username like '"+ username + "'";
-		ResultSet rs = DBConnection.makeSingleQuery(query);
+		ResultSet rs = db.makeSingleQuery(query);
 		User user;
 		try {
 			if (rs.next())

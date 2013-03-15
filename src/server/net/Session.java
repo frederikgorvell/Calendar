@@ -27,8 +27,14 @@ public class Session extends Thread {
             System.out.println("Session ID: " + sessionID);
             
             while(running) {
-            	File response = ServerLogic.handleRequest(reciveObject());
-            	sendObject(response);
+            	File received = receiveObject();
+            	if (received == null) {
+            		running = false;
+            		closeConnection();
+            	} else {
+            		File response = ServerLogic.handleRequest(received);
+            		sendObject(response);
+            	}
             }
             
             System.out.println("Session: " + sessionID + " terminated");
@@ -40,14 +46,12 @@ public class Session extends Thread {
 		}
 	}
 	
-	public File reciveObject() {
+	public File receiveObject() {
 		try {
 			System.out.println("Sesion: [" + sessionID + "] - Waiting for object...");
 			objectInputStream = new ObjectInputStream(socket.getInputStream());
 	        return (File) objectInputStream.readObject();
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			running = false;
 			return null;
 		}
