@@ -243,17 +243,17 @@ public class UserInterface {
 				//TODO
 			} else if (userInput.command.equals("help")) {
 				System.out.println("Available commands:");
-				System.out.println("  week								- view the current week with appointments");
-				System.out.println("  next								- view next week");
-				System.out.println("  previous							- view previous week");
-				System.out.println("  new								- make a new appointment, options will be prompted");
+				System.out.println("  week					- view the current week with appointments");
+				System.out.println("  next					- view next week");
+				System.out.println("  previous					- view previous week");
+				System.out.println("  new					- make a new appointment, options will be prompted");
 				System.out.println("  delete <appointmentID>			- delete an appointment");
-				System.out.println("  view <appointmentID>				- view information about an appointment");
-				System.out.println("  edit <appointmentID>				- edit an appointment");
-				System.out.println("  book <appointmentID> <extraSeats>	- make a reservation for a meeting room");
+				System.out.println("  view <appointmentID>			- view information about an appointment");
+				System.out.println("  edit <appointmentID>			- edit an appointment");
+				System.out.println("  book <appointmentID> <extraSeats>		- make a reservation for a meeting room");
 				System.out.println("  invite <appointmentID>			- invite users to a meeting");
-				System.out.println("  help								- display this helpscreen");
-				System.out.println("  exit						        - exit program");
+				System.out.println("  help					- display this helpscreen");
+				System.out.println("  exit					- exit program");
 			} else if (userInput.command.equals("exit")) {
 				clientSocket.closeConnection();
 				System.out.println("Connection closed");
