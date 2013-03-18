@@ -134,10 +134,10 @@ public class Interaction {
 	}
 	
 	//NY!
-	public boolean addAppointment(int id, String name, String username, int start, int end, String descr, String loc) {
+	public boolean addAppointment(int id, String name, int start, int end, String week, String descr, String loc, String username) {
 
 		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + name + ",'" + start + "','" 
-			+ end + "','" + descr + "','" + username + "'," + loc +"');";
+			+ end + "','" + descr + "','" + loc + "','" + username + "');";
 
 		try {
 			access.initialize();
@@ -174,6 +174,27 @@ public class Interaction {
 
 	}
 
+	//NY!
+	public boolean editAppointment(int id, String name, int start, int end, String week, String descr, String loc) {
+		String appointmentSQL = "UPDATE appointment SET name = '" + name + "', starttime = " 
+			+ start + ", endtime = " + end 
+			+ ", week = '" + week + "', description = '" + descr + "', location = '" 
+			+ loc +"' WHERE AID = " + id + ";";
+
+		try {
+			access.initialize();
+			access.makeSingleUpdate(appointmentSQL);
+			System.out.println("Appointment successfully edited.");
+			access.close();
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+			//System.out.println("Was not able to update.");
+		}
+	}
+	
 	//The user must enter all appointment data over again (for simplicity).
 	public boolean editAppointment(int id, String start, String end, String descr, int roomid, String date) {
 		String appointmentSQL = "UPDATE appointment SET starttime = '" 
@@ -225,14 +246,16 @@ public class Interaction {
 
 	}
 
-	public ResultSet getUserCalendar() {
+	public ResultSet getUserCalendar(String username, String week) {
 
-		String sql = "SELECT * FROM appointment WHERE username = " + access.getUser() + ";";
+		//ORDER BY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		String sql = "SELECT * FROM appointment WHERE username = " + username 
+				+ " AND week = " + week + " ORDER BY starttime;";
 		try {
 			access.initialize();
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
-			System.out.println("ID START END DESCRIPTION STATUS ROOM");
+			//System.out.println("ID START END DESCRIPTION STATUS ROOM");
 			/*while(rs.next())
 			{
 				String aid = rs.getString(1);

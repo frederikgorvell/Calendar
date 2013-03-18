@@ -55,6 +55,27 @@ public class XMLConverter {
 		return toFile(s, filename);
 	}
 	
+	public static File toXML(ArrayList<Appointment> appList, String filename) {
+		StringBuffer s = new StringBuffer();
+		final String type = "Appointment";
+
+		s.append(XML_VERSION_ENCODING);
+		for (Appointment appointment : appList) {
+			s.append("<" + type + ">");
+			s = addTag(s, "Username", appointment.getCreator());
+			s = addTag(s, "Specification", "week");
+			s = addTag(s, "AID", appointment.getAID() + "");
+			s = addTag(s, "Name", appointment.getName());
+			s = addTag(s, "Start", appointment.getStart());
+			s = addTag(s, "End", appointment.getEnd());
+			s = addTag(s, "Week", appointment.getWeek() + "");
+			s = addTag(s, "Description", appointment.getDescription());
+			s = addTag(s, "Location", appointment.getLocation());
+			s.append("</" + type + ">");
+		}
+		return toFile(s, filename);
+	}
+	
 	public static File makeInvite(int AID, String invitedUser) {
 		StringBuffer s = new StringBuffer();
 		final String type = "Invite";

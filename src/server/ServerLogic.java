@@ -2,6 +2,7 @@ package server;
 
 import java.io.File;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,9 +54,10 @@ public class ServerLogic {
 				String name = XMLConverter.getValue("Name", element);
 				int start = makeDateNumber(XMLConverter.getValue("Start", element));
 				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String week = XMLConverter.getValue("Week", element);
 				String desc = XMLConverter.getValue("Description", element);
 				String loc = XMLConverter.getValue("Location", element);
-				if (inter.addAppointment(aid, name, username, start, end, desc, loc)) {
+				if (inter.addAppointment(aid, name, start, end, week, desc, loc, username)) {
 					return XMLConverter.makeConfirmed(aid);
 				} else {
 					return XMLConverter.makeFailed("Could not make new appointment");
@@ -68,6 +70,18 @@ public class ServerLogic {
 				else
 					return XMLConverter.makeFailed("Could not delete appointment " + aid);
 			} else if (spec.equals("edit")) {
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				String name = XMLConverter.getValue("Name", element);
+				int start = makeDateNumber(XMLConverter.getValue("Start", element));
+				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String week = XMLConverter.getValue("Week", element);
+				String desc = XMLConverter.getValue("Description", element);
+				String loc = XMLConverter.getValue("Location", element);
+				if (inter.editAppointment(aid, name, start, end, week, desc, loc)) {
+					return XMLConverter.makeConfirmed(aid);
+				} else {
+					return XMLConverter.makeFailed("Could not make new appointment");
+				}
 				//TODO
 			} else if (spec.equals("view")) {
 				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
@@ -76,21 +90,41 @@ public class ServerLogic {
 					rs.next();
 					Appointment a = new Appointment();
 					a.setAID(Integer.parseInt(rs.getString(1)));
-					a.setStart(makeDateString(rs.getString(2)));
-					a.setEnd(makeDateString(rs.getString(3)));
-					a.setDescription(rs.getString(4));
+					a.setName(rs.getString(2));
+					a.setStart(makeDateString(rs.getString(3)));
+					a.setEnd(makeDateString(rs.getString(4)));
+					a.setWeek(Integer.parseInt(rs.getString(5)));
+					a.setDescription(rs.getString(6));
 					//HVA GJ¯R DATABASEN?
-					a.setLocation(rs.getString(5));
+					a.setLocation(rs.getString(7));
 					return XMLConverter.toXML(a, "appointment.xml", "view");
 				} else {
 					return XMLConverter.makeFailed("Could not view appointment " + aid);
 				}
-				//TODO
-				//return request;
 			} else if (spec.equals("viewOther")) {
 				//TODO
 			} else if (spec.equals("week")) {
-				//TODO
+				String week = XMLConverter.getValue("Week", element);
+				ResultSet rs = inter.getUserCalendar(username, week);
+				if (rs != null) {
+					ArrayList<Appointment> appList = new ArrayList<Appointment>();
+					Appointment a;
+					while(rs.next()) {
+						a = new Appointment();
+						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setName(rs.getString(2));
+						a.setStart(makeDateString(rs.getString(3)));
+						a.setEnd(makeDateString(rs.getString(4)));
+						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setDescription(rs.getString(6));
+						//HVA GJ¯R DATABASEN?
+						a.setLocation(rs.getString(7));
+						appList.add(a);
+					}
+					return XMLConverter.toXML(appList, "appointments.xml");
+				} else {
+					return XMLConverter.makeFailed("Could not view week");
+				}
 			}
 		} else if (type.equals("Invite")) {
 			return XMLConverter.makeConfirmed(0);
