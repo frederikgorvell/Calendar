@@ -11,6 +11,9 @@ public class Appointment {
 	private String description;
 	private String location;
 	
+	public Appointment() {
+	}
+	
 	public Appointment(int AID) {
 		this.AID = AID;
 	}

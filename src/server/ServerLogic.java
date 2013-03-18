@@ -13,14 +13,7 @@ import org.w3c.dom.NodeList;
 import shared.XMLConverter;
 
 public class ServerLogic {
-	/**
-	 * Handles all client requests based on the request field in the Request object.
-	 * The response contains an 'error' if there are some problem of some sort that 
-	 * hinders the server from returning the expected data.
-	 * 
-	 * @param request - Containing the relevant information regarding the request.
-	 * @return Response - Containing relevant information to be returned to the client.
-	 */
+	
 	public static File handleRequest(File request) throws Exception {
 		if (request == null) return null;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -119,21 +112,6 @@ public class ServerLogic {
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
 	}*/
-	
-
-	
-	/**
-	 * This method is called when the client has requestet a login.
-	 * The Request will then contain a username and a password that will be used to 
-	 * authenticate the user.
-	 * 
-	 * If the authentication gets through the Response is loaded with the key "result" with the value "loginOK"
-	 * and returned
-	 * 
-	 * @param request - The Request object containing the relevant information
-	 * @param response - The Response object to be loaded with the response
-	 * @param dc - The DbConnection object containing an open connection with the database
-	 */
 	/*
 	private static void login(Request request, Response response, DbConnection dc) {
 		String username = (String) request.getItem("username");
@@ -153,9 +131,9 @@ public class ServerLogic {
 		}
 	}
 	*/
-	
+	/*
 	public static void main(String[] args) throws Exception {
 		File f = new File("login.xml");
 		ServerLogic.handleRequest(f);
-	}
+	}*/
 }
