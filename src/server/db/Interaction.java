@@ -71,7 +71,7 @@ public class Interaction {
 		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + start + "','" 
 		+ end + "','" + descr + "','" + access.getUser() + "'," + roomid + ",'" + date +"');";
 
-		String attendSQL = "INSERTO INTO attending VALUES (" + id + "," + access.getUserID() + ";";
+		String attendSQL = "INSERT INTO attending VALUES (" + id + "," + access.getUserID() + ";";
 
 		try {
 			access.initialize();
@@ -103,6 +103,53 @@ public class Interaction {
 			e.printStackTrace();
 			return false;
 			//System.out.println("Was not able to delete.");
+		}
+
+	}
+	
+	public int getMaxAID() {
+		String sql = "SELECT MAX(AID) FROM appointment";
+		try {
+			access.initialize();
+			access.makeSingleQuery(sql);
+			ResultSet rs = access.makeSingleQuery(sql);
+			rs.next();
+			String aid = rs.getString(1);
+			return Integer.parseInt(aid);
+			/*while(rs.next())
+			{
+	//			String aid = rs.getString(1);
+				String start = rs.getString(2);
+				String end = rs.getString(3);
+				String descr = rs.getString(4);
+				String status = rs.getString(5);
+				String room = rs.getString(7);
+	
+				System.out.println(start + " " + end + " " + descr + " " + status + " " + room );
+			}*/
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	//NY!
+	public boolean addAppointment(int id, String name, String username, int start, int end, String descr, String loc) {
+
+		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + name + ",'" + start + "','" 
+			+ end + "','" + descr + "','" + username + "'," + loc +"');";
+
+		try {
+			access.initialize();
+			access.makeSingleUpdate(appointmentSQL);
+			System.out.println("Appointment was added.");
+			access.close();
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+			//System.out.println("Was not able to insert.");
 		}
 
 	}
