@@ -15,10 +15,10 @@ import shared.XMLConverter;
 
 public class ServerLogic {
 	
-	private Interaction interaction;
+	private Interaction inter;
 	
 	public ServerLogic(Interaction interaction) {
-		this.interaction = interaction;
+		this.inter = interaction;
 	}
 	
 	public File handleRequest(File request) throws Exception {
@@ -49,7 +49,11 @@ public class ServerLogic {
 				return XMLConverter.makeConfirmed(0);
 				//TODO
 			} else if (spec.equals("delete")) {
-				//TODO
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				if (inter.deleteAppointment(aid))
+						return XMLConverter.makeConfirmed(aid);
+				else
+					return XMLConverter.makeFailed("Could not delete appointment"+aid);
 			} else if (spec.equals("edit")) {
 				//TODO
 			} else if (spec.equals("view")) {

@@ -71,7 +71,7 @@ public class Interaction {
 		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + start + "','" 
 		+ end + "','" + descr + "','" + access.getUser() + "'," + roomid + ",'" + date +"');";
 
-		String attendSQL = "INSERTO INTO attending VALUES (" + id + "," + access.getUserID() + ";";
+		String attendSQL = "INSERT INTO attending VALUES (" + id + "," + access.getUserID() + ";";
 
 		try {
 			access.initialize();
