@@ -61,7 +61,7 @@ public class ServerLogic {
 			} else if (spec.equals("delete")) {
 				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
 				if (inter.deleteAppointment(aid))
-						return XMLConverter.makeConfirmed(aid);
+					return XMLConverter.makeConfirmed(aid);
 				else
 					return XMLConverter.makeFailed("Could not delete appointment"+aid);
 			} else if (spec.equals("edit")) {
