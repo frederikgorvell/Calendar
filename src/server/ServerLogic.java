@@ -1,6 +1,7 @@
 package server;
 
 import java.io.File;
+import java.sql.ResultSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -9,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import client.model.Appointment;
 
 import server.db.Interaction;
 import shared.XMLConverter;
@@ -63,10 +66,25 @@ public class ServerLogic {
 				if (inter.deleteAppointment(aid))
 					return XMLConverter.makeConfirmed(aid);
 				else
-					return XMLConverter.makeFailed("Could not delete appointment"+aid);
+					return XMLConverter.makeFailed("Could not delete appointment " + aid);
 			} else if (spec.equals("edit")) {
 				//TODO
 			} else if (spec.equals("view")) {
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				ResultSet rs = inter.getAppointment(aid);
+				if (rs != null) {
+					rs.next();
+					Appointment a = new Appointment();
+					a.setAID(Integer.parseInt(rs.getString(1)));
+					a.setStart(makeDateString(rs.getString(2)));
+					a.setEnd(makeDateString(rs.getString(3)));
+					a.setDescription(rs.getString(4));
+					//HVA GJ¯R DATABASEN?
+					a.setLocation(rs.getString(5));
+					return XMLConverter.toXML(a, "appointment.xml", "view");
+				} else {
+					return XMLConverter.makeFailed("Could not view appointment " + aid);
+				}
 				//TODO
 				//return request;
 			} else if (spec.equals("viewOther")) {
@@ -134,11 +152,32 @@ public class ServerLogic {
 		String[] rawDate = raw[0].split("-");
 		String[] rawTime = raw[1].split(":");
 		sb.append(rawDate[0]);
-		sb.append(rawDate[1]);
-		sb.append(rawDate[2]);
-		sb.append(rawTime[0]);
-		sb.append(rawTime[1]);
+		sb.append(addZero(rawDate[1]));
+		sb.append(addZero(rawDate[2]));
+		sb.append(addZero(rawTime[0]));
+		sb.append(addZero(rawTime[1]));
 		return Integer.parseInt(sb.toString());
+	}
+	
+	private String addZero(String number) {
+		if (number.length() > 1)
+			return number;
+		else
+			return "0" + number;
+	}
+	
+	private String makeDateString(String dateNumber) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(dateNumber.substring(0,3));
+		sb.append("-");
+		sb.append(dateNumber.substring(4, 5));
+		sb.append("-");
+		sb.append(dateNumber.substring(6,7));
+		sb.append(" ");
+		sb.append(dateNumber.substring(8,9));
+		sb.append(":");
+		sb.append(dateNumber.substring(10,11));
+		return sb.toString();
 	}
 	
 	/*private static String getValue(String tag, Element element) {
