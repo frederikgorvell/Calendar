@@ -17,8 +17,13 @@ public class ServerLogic {
 	
 	private Interaction inter;
 	
+<<<<<<< HEAD
 	public ServerLogic(Interaction interaction) {
 		this.inter = interaction;
+=======
+	public ServerLogic(Interaction inter) {
+		this.inter = inter;
+>>>>>>> master
 	}
 	
 	public File handleRequest(File request) throws Exception {
@@ -46,7 +51,17 @@ public class ServerLogic {
 			String spec = XMLConverter.getValue("Specification", element);
 			
 			if (spec.equals("new")) {
-				return XMLConverter.makeConfirmed(0);
+				int aid = inter.getMaxAID() + 1;
+				String name = XMLConverter.getValue("Name", element);
+				int start = makeDateNumber(XMLConverter.getValue("Start", element));
+				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String desc = XMLConverter.getValue("Description", element);
+				String loc = XMLConverter.getValue("Location", element);
+				if (inter.addAppointment(aid, name, username, start, end, desc, loc)) {
+					return XMLConverter.makeConfirmed(aid);
+				} else {
+					return XMLConverter.makeFailed("Could not make new appointment");
+				}
 				//TODO
 			} else if (spec.equals("delete")) {
 				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
@@ -116,6 +131,19 @@ public class ServerLogic {
 		}	*/
 //		dc.closeConnection();
 		return null;		
+	}
+	
+	private int makeDateNumber(String dateString) {
+		StringBuffer sb = new StringBuffer();
+		String[] raw = dateString.split(" ");
+		String[] rawDate = raw[0].split("-");
+		String[] rawTime = raw[1].split(":");
+		sb.append(rawDate[0]);
+		sb.append(rawDate[1]);
+		sb.append(rawDate[2]);
+		sb.append(rawTime[0]);
+		sb.append(rawTime[1]);
+		return Integer.parseInt(sb.toString());
 	}
 	
 	/*private static String getValue(String tag, Element element) {
