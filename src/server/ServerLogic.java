@@ -16,14 +16,9 @@ import shared.XMLConverter;
 public class ServerLogic {
 	
 	private Interaction inter;
-	
-<<<<<<< HEAD
-	public ServerLogic(Interaction interaction) {
-		this.inter = interaction;
-=======
+
 	public ServerLogic(Interaction inter) {
 		this.inter = inter;
->>>>>>> master
 	}
 	
 	public File handleRequest(File request) throws Exception {
