@@ -10,11 +10,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import server.db.Interaction;
 import shared.XMLConverter;
 
 public class ServerLogic {
 	
-	public static File handleRequest(File request) throws Exception {
+	private Interaction interaction;
+	
+	public ServerLogic(Interaction interaction) {
+		this.interaction = interaction;
+	}
+	
+	public File handleRequest(File request) throws Exception {
 		if (request == null) return null;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

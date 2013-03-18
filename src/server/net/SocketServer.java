@@ -3,13 +3,15 @@ package server.net;
 import java.net.Socket;
 import java.net.ServerSocket;
 
+import server.db.Interaction;
+
 public class SocketServer extends Thread {	
 	private int port;
-//	private DBConnection db;
+	private Interaction interaction;
 	
-	public SocketServer(int port/*, DBConnection db*/) {
+	public SocketServer(int port, Interaction interaction) {
 		this.port = port;
-//		this.db = db;
+		this.interaction = interaction;
 	}
 	
 	public void run() {
@@ -19,7 +21,7 @@ public class SocketServer extends Thread {
 	        System.out.println("Client handler started...");
 	        while(true) {
 	        	Socket socket = serversocket.accept();
-	        	Session session = new Session(socket, id++/*, db*/);
+	        	Session session = new Session(socket, id++, interaction);
 	        	session.start();
 	        }    
 		}

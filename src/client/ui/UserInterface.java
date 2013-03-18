@@ -197,7 +197,8 @@ public class UserInterface {
 				weekNr++;
 				viewWeek(weekNr);
 			} else if (userInput.command.equals("previous")) {
-				//TODO
+				weekNr--;
+				viewWeek(weekNr);
 			} else if (userInput.command.equals("new")) {
 				if(newAppointment()) {
 					System.out.println("Appointment created");
@@ -308,13 +309,12 @@ public class UserInterface {
 						}
 					}
 				}
-				
-				
-				//viewAppointment(a);
-			} catch (NumberFormatException e) {
-				System.out.println("Invalid appointmentID, must be a number!");
+				return true;
+			} catch (Exception e) {
+				System.out.println("Could not view week");
+				e.printStackTrace();
+				return false;
 			}
-			return false;
 		}
 		
 		private boolean newAppointment() {
