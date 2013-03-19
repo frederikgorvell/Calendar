@@ -155,7 +155,7 @@ public class ServerLogic {
 						a.setLocation(rs.getString(7));
 						appList.add(a);
 					}
-					return XMLConverter.toXML(appList, "appointments.xml");
+					return XMLConverter.toXML(appList, "calendar.xml");
 				} else {
 					return XMLConverter.makeFailed("Could not view week");
 				}

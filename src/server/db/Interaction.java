@@ -270,7 +270,6 @@ public class Interaction {
 				System.out.println(aid + " " + start + " " + end + " " + descr + " " + status + " " + room );
 	//			System.out.println(String.format("%s %s %s %s %s %s", aid, start, end, descr, status, room));
 			}*/
-			access.close();
 			return rs;
 		}
 		catch (Exception e) {
