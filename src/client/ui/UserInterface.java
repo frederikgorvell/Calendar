@@ -291,7 +291,24 @@ public class UserInterface {
 				File sendFile = XMLConverter.toXML(appointment, "calendar.xml", "week");
 				clientSocket.send(sendFile);
 				File receiveFile = clientSocket.receiveObject();
-				ArrayList<Appointment> appList = XMLConverter.makeAppointment(receiveFile);
+				ArrayList<Appointment> appList = XMLConverter.makeAppointments(receiveFile);
+				System.out.print("Week number: " + week);
+				int dayNr = 1;
+				System.out.print("\nMonday: ");
+				int i = 0;
+				while (i < appList.size()){
+					Appointment a = appList.get(i);
+					
+					
+					if (equalsDay(a.getStart(), dayNr)) {
+						System.out.print(a.getAID() + " " + a.getName() + " " + getTime(a.getStart()) + "-" + getTime(a.getEnd()) + "; ");
+						i++;
+					} else {
+						printDay(dayNr + 1);
+						dayNr++;
+					}
+				}
+				/*
 				for (Appointment a : appList) {
 					System.out.print("Week number: " + week);
 					int dayNr = 1;
@@ -317,7 +334,7 @@ public class UserInterface {
 							dayNr++;
 						}
 					}
-				}
+				}*/
 				return true;
 			} catch (Exception e) {
 				System.out.println("Could not view week");
@@ -544,7 +561,7 @@ public class UserInterface {
 			StringBuilder sb = new StringBuilder();
 			sb.append(gc.get(Calendar.YEAR));
 			sb.append("-");
-			sb.append(gc.get(Calendar.MONTH));
+			sb.append(gc.get(Calendar.MONTH) + 1);
 			sb.append("-");
 			sb.append(gc.get(Calendar.DAY_OF_MONTH));
 			sb.append(" ");
@@ -566,6 +583,24 @@ public class UserInterface {
 			GregorianCalendar gc = new GregorianCalendar(year, month, day);
 			
 			return gc.get(Calendar.DAY_OF_WEEK) - 1 == dayNr;
+		}
+		
+		private void printDay(int dayNr) {
+			if (dayNr == 2) {
+				System.out.print("\nTuesday: ");
+			} else if (dayNr == 3) {
+				System.out.print("\nWednesday: ");
+			} else if (dayNr == 4) {
+				System.out.print("\nThursday: ");
+			} else if (dayNr == 5) {
+				System.out.print("\nFriday: ");
+			} else if (dayNr == 6) {
+				System.out.print("\nSaturday: ");
+			} else if (dayNr == 7) {
+				System.out.print("\nSunday: ");
+			} else {
+				System.out.println("Day error");
+			}
 		}
 	
 	}

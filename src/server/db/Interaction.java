@@ -116,8 +116,7 @@ public class Interaction {
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
 			rs.next();
-			String aid = rs.getString(1);
-			return Integer.parseInt(aid);
+			return rs.getInt(1);
 			/*while(rs.next())
 			{
 	//			String aid = rs.getString(1);

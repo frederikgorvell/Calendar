@@ -63,8 +63,9 @@ public class XMLConverter {
 		filename = "calendar.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
-
+		
 		s.append(XML_VERSION_ENCODING);
+		s.append("<Appointments>");
 		for (Appointment appointment : appList) {
 			s.append("<" + type + ">");
 			s = addTag(s, "Username", appointment.getCreator());
@@ -79,6 +80,7 @@ public class XMLConverter {
 			s = addTag(s, "Other", appointment.getOther());
 			s.append("</" + type + ">");
 		}
+		s.append("</Appointments>");
 		return toFile(s, filename);
 	}
 	
@@ -198,6 +200,43 @@ public class XMLConverter {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
+		}
+	}
+	
+	public static ArrayList<Appointment> makeAppointments(File received) {
+		//liste kanskje
+		try {
+			ArrayList<Appointment> appList = new ArrayList<Appointment>();
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(received);
+			doc.getDocumentElement().normalize();
+
+			NodeList nodes = doc.getElementsByTagName("Appointment");
+	
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node node = nodes.item(i);
+		
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element element = (Element) node;
+					
+					int AID = Integer.parseInt(getValue("AID", element));
+					String name = getValue("Name", element);
+					String start = getValue("Start", element);
+					String end = getValue("End", element);
+					int week = Integer.parseInt(getValue("Week", element));
+					String desc = getValue("Description", element);
+					String loc = getValue("Location", element);
+					
+					Appointment a = new Appointment(name, start, end, desc, loc);
+					a.setWeek(week);
+					appList.add(a);
+				}
+			}
+			return appList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
