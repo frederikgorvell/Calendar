@@ -32,6 +32,15 @@ public class Appointment {
 		this.location = location;
 	}
 	
+	public Appointment(int AID, String name, String start, String end, String description, String location) {
+		this.AID = AID;
+		this.name = name;
+		this.start = start;
+		this.end = end;
+		this.description = description;
+		this.location = location;
+	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}

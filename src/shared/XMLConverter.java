@@ -202,7 +202,7 @@ public class XMLConverter {
 			return -1;
 		}
 	}
-	
+	/*
 	public static ArrayList<Appointment> makeAppointments(File received) {
 		//liste kanskje
 		try {
@@ -238,7 +238,7 @@ public class XMLConverter {
 			e.printStackTrace();
 			return null;
 		}
-	}
+	}*/
 	
 	public static ArrayList<Appointment> makeAppointment(File received) {
 		//liste kanskje
@@ -265,7 +265,7 @@ public class XMLConverter {
 					String desc = getValue("Description", element);
 					String loc = getValue("Location", element);
 					
-					Appointment a = new Appointment(name, start, end, desc, loc);
+					Appointment a = new Appointment(AID, name, start, end, desc, loc);
 					a.setWeek(week);
 					appList.add(a);
 				}
