@@ -1,5 +1,4 @@
 
-
 CREATE TABLE PARTICIPANT (
 	participantID INT NOT NULL,	
 	PRIMARY KEY (participantID)
@@ -41,8 +40,8 @@ CREATE TABLE ROOM (
 CREATE TABLE APPOINTMENT (
 	AID INT NOT NULL,
 	name VARCHAR(30),
-	starttime INT NOT NULL,
-	endtime INT NOT NULL,
+	starttime VARCHAR(12) NOT NULL,
+	endtime VARCHAR(12) NOT NULL,
 	week VARCHAR(2) NOT NULL,
 	description VARCHAR(150),
 	location VARCHAR(30),
