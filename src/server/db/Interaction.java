@@ -138,8 +138,8 @@ public class Interaction {
 	//NY!
 	public boolean addAppointment(int id, String name, String start, String end, String week, String descr, String loc, String username) {
 
-		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + name + ",'" + start + "','" 
-			+ end + "','" + descr + "','" + loc + "','" + username + "');";
+		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ", '" + name + "', '" + start + "', '" 
+			+ end + "', '" + descr + "', '" + loc + "', '" + username + "');";
 
 		try {
 			access.initialize();
