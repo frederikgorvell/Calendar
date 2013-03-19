@@ -60,7 +60,7 @@ public class Session extends Thread {
 	
 	public File receiveObject() {
 		try {
-			File f = new File("receive.xml");
+
 			System.out.println("Sesion: [" + sessionID + "] - Waiting for object...");
 			//
 			InputStream is = null;
@@ -75,7 +75,9 @@ public class Session extends Thread {
 		    } catch (IOException ex) {
 		        System.out.println("Can't get socket input stream. ");
 		    }
+			File f = null;
 			try {
+				f = new File("receive.xml");
 		        fos = new FileOutputStream("receive.xml");
 		        bos = new BufferedOutputStream(fos);
 
