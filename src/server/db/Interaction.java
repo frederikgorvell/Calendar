@@ -8,12 +8,14 @@ public class Interaction {
 	MySQLAccess access = new MySQLAccess();
 
 	public boolean addGroup(int participantid, String name, String email, int groupid) {
+		String participantSQL = "INSERT INTO participant VALUES (" + participantid + ");";
 
 		String groupSQL = "INSERT INTO groups  VALUES (" + participantid + ",'" + name + "','" 
 			+ email + "','" + groupid + ");";
 
 		try {
 			access.initialize();
+			access.makeSingleUpdate(participantSQL);
 			access.makeSingleUpdate(groupSQL);
 			System.out.println("Group was added.");
 			access.close();
