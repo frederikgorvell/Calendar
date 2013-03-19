@@ -1,4 +1,4 @@
-package client.model;
+package shared.model;
 
 public class Appointment {
 
@@ -10,6 +10,7 @@ public class Appointment {
 	private int week;
 	private String description;
 	private String location;
+	private String other;
 	
 	public Appointment() {
 	}
@@ -93,6 +94,14 @@ public class Appointment {
 	
 	public int getWeek() {
 		return week;
+	}
+	
+	public void setOther(String other) {
+		this.other = other;
+	}
+	
+	public String getOther() {
+		return other;
 	}
 
 }

@@ -12,10 +12,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import client.model.Appointment;
 
 import server.db.Interaction;
 import shared.XMLConverter;
+import shared.model.Appointment;
 
 public class ServerLogic {
 	
@@ -36,6 +36,7 @@ public class ServerLogic {
 		
 		if (type.equals("Login")) {
 			//TODO db
+			
 			return XMLConverter.makeConfirmed(1);
 			
 		} else if (type.equals("Appointment")) {
@@ -51,6 +52,7 @@ public class ServerLogic {
 			
 			if (spec.equals("new")) {
 				int aid = inter.getMaxAID() + 1;
+				if (aid == -1) return XMLConverter.makeFailed("Could not make new appointment");
 				String name = XMLConverter.getValue("Name", element);
 				int start = makeDateNumber(XMLConverter.getValue("Start", element));
 				int end = makeDateNumber(XMLConverter.getValue("End", element));
@@ -102,10 +104,30 @@ public class ServerLogic {
 					return XMLConverter.makeFailed("Could not view appointment " + aid);
 				}
 			} else if (spec.equals("viewOther")) {
-				//TODO
-			} else if (spec.equals("week")) {
 				String week = XMLConverter.getValue("Week", element);
 				ResultSet rs = inter.getUserCalendar(username, week);
+				if (rs != null) {
+					ArrayList<Appointment> appList = new ArrayList<Appointment>();
+					Appointment a;
+					while(rs.next()) {
+						a = new Appointment();
+						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setName(rs.getString(2));
+						a.setStart(makeDateString(rs.getString(3)));
+						a.setEnd(makeDateString(rs.getString(4)));
+						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setDescription(rs.getString(6));
+						//HVA GJ¯R DATABASEN?
+						a.setLocation(rs.getString(7));
+						appList.add(a);
+					}
+					return XMLConverter.toXML(appList, "appointments.xml");
+				} else {
+					return XMLConverter.makeFailed("Could not view week");
+				}
+			} else if (spec.equals("week")) {
+				String week = XMLConverter.getValue("Week", element);
+				ResultSet rs = inter.getUserCalendar(XMLConverter.getValue("Other", element), week);
 				if (rs != null) {
 					ArrayList<Appointment> appList = new ArrayList<Appointment>();
 					Appointment a;

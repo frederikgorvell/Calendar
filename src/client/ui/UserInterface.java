@@ -11,8 +11,8 @@ import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import shared.XMLConverter;
+import shared.model.Appointment;
 
-import client.model.Appointment;
 import client.model.Login;
 import client.net.SocketClient;
 
