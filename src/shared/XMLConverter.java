@@ -15,9 +15,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import shared.model.Appointment;
-
 import client.model.Login;
+
+import shared.model.Appointment;
 
 public class XMLConverter {
 

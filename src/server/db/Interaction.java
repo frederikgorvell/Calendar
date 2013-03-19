@@ -250,7 +250,7 @@ public class Interaction {
 
 		//ORDER BY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		String sql = "SELECT * FROM appointment WHERE username = " + username 
-				+ " AND week = " + week + " ORDER BY starttime;";
+				+ " AND week = " + week + " ORDER BY starttime ASC;";
 		try {
 			access.initialize();
 			access.makeSingleQuery(sql);
@@ -300,6 +300,31 @@ public class Interaction {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Could not find appointment.");
+			return null;
+		}
+	}
+	
+	public ResultSet getPerson(String username) {
+		String sql = "SELECT * FROM person WHERE username = " + username;
+		try {
+			access.initialize();
+			access.makeSingleQuery(sql);
+			ResultSet rs = access.makeSingleQuery(sql);
+			/*while(rs.next())
+			{
+	//			String aid = rs.getString(1);
+				String start = rs.getString(2);
+				String end = rs.getString(3);
+				String descr = rs.getString(4);
+				String status = rs.getString(5);
+				String room = rs.getString(7);
+	
+				System.out.println(start + " " + end + " " + descr + " " + status + " " + room );
+			}*/
+			return rs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Could not person.");
 			return null;
 		}
 	}

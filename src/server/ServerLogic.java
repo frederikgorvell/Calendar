@@ -35,9 +35,21 @@ public class ServerLogic {
 		String type = doc.getDocumentElement().getNodeName();
 		
 		if (type.equals("Login")) {
-			//TODO db
-			
-			return XMLConverter.makeConfirmed(1);
+			NodeList nodes = doc.getElementsByTagName("Login");
+			Node node = nodes.item(0);
+			Element element = (Element) node;
+			String username = XMLConverter.getValue("Username", element);
+			String password = XMLConverter.getValue("Password", element);
+			ResultSet rs = inter.getPerson(username);
+			if (rs != null) {
+				rs.next();
+				if (password.equals(rs.getString(1)))
+					return XMLConverter.makeConfirmed(0);
+				else 
+					return XMLConverter.makeFailed("Could not login");
+			} else {
+				return XMLConverter.makeFailed("Could not login");
+			}
 			
 		} else if (type.equals("Appointment")) {
 			

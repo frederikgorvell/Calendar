@@ -1,7 +1,5 @@
 package client.ui;
 
-import client.net.SocketClient;
-
 public class Client {
 	private final static int port = 12467;
 	
