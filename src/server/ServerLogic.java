@@ -43,7 +43,7 @@ public class ServerLogic {
 			ResultSet rs = inter.getPerson(username);
 			if (rs != null) {
 				rs.next();
-				if (password.equals(rs.getString(1)))
+				if (password.equals(rs.getString(5)))
 					return XMLConverter.makeConfirmed(0);
 				else 
 					return XMLConverter.makeFailed("Could not login");

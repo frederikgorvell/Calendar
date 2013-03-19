@@ -55,7 +55,7 @@ public class UserInterface {
 			String password = scan.nextLine();
 			
 			Login login = new Login(username, password);
-			File loginFile = XMLConverter.toXML(login, "login.xml");
+			File loginFile = XMLConverter.toXML(login, "calendar.xml");
 //			File loginFile = xmlc.toXML(login, "login.xml");
 			clientSocket.send(loginFile);
 			File received = clientSocket.receiveObject();
@@ -279,7 +279,7 @@ public class UserInterface {
 				appointment.setCreator(username);
 				appointment.setWeek(week);
 				
-				File sendFile = XMLConverter.toXML(appointment, "Appointment.xml", "week");
+				File sendFile = XMLConverter.toXML(appointment, "calendar.xml", "week");
 				clientSocket.send(sendFile);
 				File receiveFile = clientSocket.receiveObject();
 				ArrayList<Appointment> appList = XMLConverter.makeAppointment(receiveFile);
@@ -338,7 +338,7 @@ public class UserInterface {
 			a.setCreator(username);
 			a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 		
-			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "new");
+			File sendFile = XMLConverter.toXML(a, "calendar.xml", "new");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			a.setAID(XMLConverter.getAID(receiveFile));
@@ -352,7 +352,7 @@ public class UserInterface {
 		
 		private boolean deleteAppointment(int AID) {
 			Appointment a = new Appointment(AID);
-			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "delete");
+			File sendFile = XMLConverter.toXML(a, "calendar.xml", "delete");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			return XMLConverter.isConfirmed(receiveFile);
@@ -361,7 +361,7 @@ public class UserInterface {
 		private Appointment getAppointment(int AID) {
 			Appointment a = new Appointment(AID);
 			
-			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "view");
+			File sendFile = XMLConverter.toXML(a, "calendar.xml", "view");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			a = XMLConverter.makeAppointment(receiveFile).get(0);
@@ -424,7 +424,7 @@ public class UserInterface {
 				a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 			}
 		
-			File sendFile = XMLConverter.toXML(a, "Appointment.xml", "edit");
+			File sendFile = XMLConverter.toXML(a, "calendar.xml", "edit");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			return XMLConverter.isConfirmed(receiveFile);

@@ -60,10 +60,11 @@ public class SocketClient {
 		    }
 
 		    out.flush();
-		    /*
+		    
 		    out.close();
 		    fis.close();
 		    bis.close();
+		    /*
 		    socket.close();
 			*/
 		    
@@ -119,7 +120,7 @@ public class SocketClient {
 	
 	public File receiveObject() {
 		try {
-			File f = new File("calendar.xml");
+			File f = new File("receive.xml");
 			System.out.println("Client waiting for object...");
 //			ois = new ObjectInputStream(socket.getInputStream());
 			//
@@ -136,7 +137,7 @@ public class SocketClient {
 		        System.out.println("Can't get socket input stream. ");
 		    }
 			try {
-		        fos = new FileOutputStream("calendar.xml");
+		        fos = new FileOutputStream("receive.xml");
 		        bos = new BufferedOutputStream(fos);
 
 		    } catch (FileNotFoundException ex) {
@@ -152,6 +153,8 @@ public class SocketClient {
 		    }
 
 		    bos.flush();
+		    bos.close();
+		    is.close();
 		    //
 		    return f;
 //	        return new File("calendar.xml");
