@@ -251,8 +251,8 @@ public class Interaction {
 	public ResultSet getUserCalendar(String username, String week) {
 
 		//ORDER BY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		String sql = "SELECT * FROM appointment WHERE username = " + username 
-				+ " AND week = " + week + " ORDER BY starttime ASC;";
+		String sql = "SELECT * FROM appointment WHERE username = '" + username 
+				+ "' AND week = '" + week + "' ORDER BY starttime ASC;";
 		try {
 			access.initialize();
 			access.makeSingleQuery(sql);
