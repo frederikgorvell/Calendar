@@ -24,12 +24,14 @@ public class UserInterface {
 	private SocketClient clientSocket;
 	private String username;
 	private int weekNr;
+	private int curWeek;
 	
 	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
 		this.hostAddr = hostAddr;
 		this.port = port;
 		GregorianCalendar time = new GregorianCalendar();
 		weekNr = time.get(Calendar.WEEK_OF_YEAR);
+		curWeek = weekNr;
 //		xmlc = new XMLConverter();
 		scan = new Scanner(System.in);
 		System.out.println("Client started...");
@@ -86,29 +88,30 @@ public class UserInterface {
 		
 	}
 	
+	/*
 	private boolean loginPrompt() {
 		System.out.print("Enter username: ");
 		String username = scan.nextLine();
 		System.out.print("Enter password: ");
 		String password = scan.nextLine();
 		Login login = new Login(username, password);
-		/*if (isCorrect(log)) {
+		if (isCorrect(log)) {
 			return true;
-		}*/
+		}
 		return true;
-	}
+	}*/
 	
 	//public static void main(String[] args) throws Exception /* CHANGE! */ {
 		//new UserInterface();
 	//}
-	
+	/*
 	class ReceiverThread extends Thread {
 		//receive from server, alternate ask for updates on invites etc
 		//don't know if i need multiple SocketClient
 		public void run() {
 			
 		}
-	}
+	}*/
 
 
 	class UserInput {
@@ -181,10 +184,8 @@ public class UserInterface {
 			UserInput userInput = cli.nextCommand();
 			String a1 = userInput.argument1;
 			String a2 = userInput.argument2;
-			if(userInput.command.equals("week")) {
-				if (viewWeek(weekNr)) {
-					
-				}
+			if(userInput.command.equals("thisWeek")) {
+				viewWeek(weekNr);
 				
 				//TODO
 				/*
@@ -201,12 +202,14 @@ public class UserInterface {
 				} else {
 					System.out.println(a1 + " already exists in the list.");
 				}*/
+			} else if (userInput.command.equals("week")) {
+				viewWeek(curWeek);
 			} else if (userInput.command.equals("next")) {
-				weekNr++;
-				viewWeek(weekNr);
+				curWeek++;
+				viewWeek(curWeek);
 			} else if (userInput.command.equals("previous")) {
-				weekNr--;
-				viewWeek(weekNr);
+				curWeek--;
+				viewWeek(curWeek);
 			} else if (userInput.command.equals("new")) {
 				if(newAppointment()) {
 					System.out.println("Appointment created");
@@ -261,7 +264,8 @@ public class UserInterface {
 				//TODO
 			} else if (userInput.command.equals("help")) {
 				System.out.println("Available commands:");
-				System.out.println("  week					- view the current week with appointments");
+				System.out.println("  thisWeek					- view the current week with appointments");
+				System.out.println("  week					- view the selected week with appointments");
 				System.out.println("  next					- view next week");
 				System.out.println("  previous				- view previous week");
 				System.out.println("  new					- make a new appointment, options will be prompted");
