@@ -94,7 +94,7 @@ public class ServerLogic {
 				if (inter.editAppointment(aid, name, start, end, week, desc, loc)) {
 					return XMLConverter.makeConfirmed(aid);
 				} else {
-					return XMLConverter.makeFailed("Could not make new appointment");
+					return XMLConverter.makeFailed("Could not edit appointment");
 				}
 				//TODO
 			} else if (spec.equals("view")) {

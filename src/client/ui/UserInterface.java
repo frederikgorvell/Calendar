@@ -264,7 +264,7 @@ public class UserInterface {
 				//TODO
 			} else if (userInput.command.equals("help")) {
 				System.out.println("Available commands:");
-				System.out.println("  thisWeek					- view the current week with appointments");
+				System.out.println("  thisWeek				- view the current week with appointments");
 				System.out.println("  week					- view the selected week with appointments");
 				System.out.println("  next					- view next week");
 				System.out.println("  previous				- view previous week");
@@ -390,7 +390,12 @@ public class UserInterface {
 			File sendFile = XMLConverter.toXML(a,/* "calendar.xml",*/ "delete");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
-			return XMLConverter.isConfirmed(receiveFile);
+			if (XMLConverter.isFailed(receiveFile)) {
+				System.out.println(XMLConverter.getFailMessage(receiveFile));
+				return false;
+			} else {
+				return XMLConverter.isConfirmed(receiveFile);
+			}
 		}
 		
 		private Appointment getAppointment(int AID) {
@@ -399,8 +404,13 @@ public class UserInterface {
 			File sendFile = XMLConverter.toXML(a, /*"calendar.xml", */"view");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
-			a = XMLConverter.makeAppointment(receiveFile).get(0);
-			return a;
+			if (XMLConverter.isFailed(receiveFile)) {
+				System.out.println(XMLConverter.getFailMessage(receiveFile));
+				return null;
+			} else {
+				a = XMLConverter.makeAppointment(receiveFile).get(0);
+				return a;
+			}
 		}
 		
 		private void viewAppointment(Appointment a) {
@@ -423,7 +433,7 @@ public class UserInterface {
 			System.out.println("Submit attributes to be changed, just press enter for attributes not to be changed");
 			System.out.print("Appointment name: ");
 			String name = scan.nextLine();
-			if (name != null) {
+			if (!name.equals("")) {
 				a.setName(name);
 			}
 			GregorianCalendar start = askUserStart(true);
@@ -447,12 +457,12 @@ public class UserInterface {
 			}
 			System.out.print("Description: ");
 			String desc = scan.nextLine();
-			if (desc != null) {
+			if (!desc.equals("")) {
 				a.setDescription(desc);
 			}
 			System.out.print("Location: ");
 			String location = scan.nextLine();
-			if (location != null) {
+			if (!location.equals("")) {
 				a.setLocation(location);
 			}
 			if (start.get(Calendar.WEEK_OF_YEAR) != a.getWeek()) {
@@ -486,7 +496,7 @@ public class UserInterface {
 			String time = scan.nextLine();
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
-				if (edit && time == null) {
+				if (edit && time.equals("")) {
 					return null;
 				}
 				if (isLegalTime(time)) {
@@ -519,7 +529,7 @@ public class UserInterface {
 			
 			boolean dateOK = false;
 			while (!dateOK /* || time = "cancel"*/) {
-				if (edit && time == null) {
+				if (edit && time.equals("")) {
 					return null;
 				}
 				if (isLegalTime(time)) {

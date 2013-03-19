@@ -180,6 +180,48 @@ public class XMLConverter {
 		}
 	}
 	
+	public static boolean isFailed(File received) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(received);
+			doc.getDocumentElement().normalize();
+			String type = doc.getDocumentElement().getNodeName();
+			
+			if (type.equals("Failed")) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static String getFailMessage(File received) {
+		try {
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(received);
+			doc.getDocumentElement().normalize();
+			String type = doc.getDocumentElement().getNodeName();
+			
+			if (type.equals("Failed")) {
+				NodeList nodes = doc.getElementsByTagName("Failed");
+				Node node = nodes.item(0);
+				Element element = (Element) node;
+				return getValue("Message", element);
+				
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static int getAID(File received) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
