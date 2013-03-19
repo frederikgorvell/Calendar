@@ -139,7 +139,7 @@ public class ServerLogic {
 				}
 			} else if (spec.equals("week")) {
 				String week = XMLConverter.getValue("Week", element);
-				ResultSet rs = inter.getUserCalendar(XMLConverter.getValue("Other", element), week);
+				ResultSet rs = inter.getUserCalendar(username, week);
 				if (rs != null) {
 					ArrayList<Appointment> appList = new ArrayList<Appointment>();
 					Appointment a;
