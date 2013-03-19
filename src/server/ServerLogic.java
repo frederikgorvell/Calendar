@@ -71,7 +71,7 @@ public class ServerLogic {
 				String week = XMLConverter.getValue("Week", element);
 				String desc = XMLConverter.getValue("Description", element);
 				String loc = XMLConverter.getValue("Location", element);
-				if (inter.addAppointment(aid, name, start, end, week, desc, username, loc, 0)) {
+				if (inter.addAppointment(aid, name, start, end, week, desc, loc, username, 0)) {
 					return XMLConverter.makeConfirmed(aid);
 				} else {
 					return XMLConverter.makeFailed("Could not make new appointment");

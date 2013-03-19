@@ -11,7 +11,7 @@ public class Interaction {
 		String participantSQL = "INSERT INTO participant VALUES (" + participantid + ");";
 
 		String groupSQL = "INSERT INTO groups  VALUES (" + participantid + ",'" + name + "','" 
-			+ email + "','" + groupid + ");";
+			+ email + "'," + groupid + ");";
 
 		try {
 			access.initialize();
