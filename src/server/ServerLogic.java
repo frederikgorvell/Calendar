@@ -103,11 +103,11 @@ public class ServerLogic {
 				if (rs != null) {
 					rs.next();
 					Appointment a = new Appointment();
-					a.setAID(Integer.parseInt(rs.getString(1)));
+					a.setAID(rs.getInt(1));
 					a.setName(rs.getString(2));
 					a.setStart(makeDateString(rs.getString(3)));
 					a.setEnd(makeDateString(rs.getString(4)));
-					a.setWeek(Integer.parseInt(rs.getString(5)));
+					a.setWeek(rs.getInt(5));
 					a.setDescription(rs.getString(6));
 					//HVA GJ¯R DATABASEN?
 					a.setLocation(rs.getString(8));
