@@ -15,7 +15,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import client.model.Appointment;
+import shared.model.Appointment;
+
 import client.model.Login;
 
 public class XMLConverter {
@@ -52,6 +53,28 @@ public class XMLConverter {
 		s = addTag(s, "Location", appointment.getLocation());
 		s.append("</" + type + ">");
 
+		return toFile(s, filename);
+	}
+	
+	public static File toXML(ArrayList<Appointment> appList, String filename) {
+		StringBuffer s = new StringBuffer();
+		final String type = "Appointment";
+
+		s.append(XML_VERSION_ENCODING);
+		for (Appointment appointment : appList) {
+			s.append("<" + type + ">");
+			s = addTag(s, "Username", appointment.getCreator());
+			s = addTag(s, "Specification", "week");
+			s = addTag(s, "AID", appointment.getAID() + "");
+			s = addTag(s, "Name", appointment.getName());
+			s = addTag(s, "Start", appointment.getStart());
+			s = addTag(s, "End", appointment.getEnd());
+			s = addTag(s, "Week", appointment.getWeek() + "");
+			s = addTag(s, "Description", appointment.getDescription());
+			s = addTag(s, "Location", appointment.getLocation());
+			s = addTag(s, "Other", appointment.getOther());
+			s.append("</" + type + ">");
+		}
 		return toFile(s, filename);
 	}
 	

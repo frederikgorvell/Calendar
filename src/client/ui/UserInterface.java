@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import shared.XMLConverter;
+import shared.model.Appointment;
 
-import client.model.Appointment;
 import client.model.Login;
 import client.net.SocketClient;
 
@@ -22,10 +23,13 @@ public class UserInterface {
 	private int port;
 	private SocketClient clientSocket;
 	private String username;
+	private int weekNr;
 	
 	public UserInterface(String hostAddr, int port) throws Exception /* CHANGE! */{
 		this.hostAddr = hostAddr;
 		this.port = port;
+		GregorianCalendar time = new GregorianCalendar();
+		weekNr = time.get(Calendar.WEEK_OF_YEAR);
 //		xmlc = new XMLConverter();
 		scan = new Scanner(System.in);
 		boolean loginOK = false;
@@ -170,6 +174,10 @@ public class UserInterface {
 			String a1 = userInput.argument1;
 			String a2 = userInput.argument2;
 			if(userInput.command.equals("week")) {
+				if (viewWeek(weekNr)) {
+					
+				}
+				
 				//TODO
 				/*
 				if (a1 == null) {
@@ -186,9 +194,11 @@ public class UserInterface {
 					System.out.println(a1 + " already exists in the list.");
 				}*/
 			} else if (userInput.command.equals("next")) {
-				//TODO
+				weekNr++;
+				viewWeek(weekNr);
 			} else if (userInput.command.equals("previous")) {
-				//TODO
+				weekNr--;
+				viewWeek(weekNr);
 			} else if (userInput.command.equals("new")) {
 				if(newAppointment()) {
 					System.out.println("Appointment created");
@@ -260,6 +270,50 @@ public class UserInterface {
 				System.exit(0);
 			} else {
 				System.out.println("Invalid command!");
+			}
+		}
+		
+		private boolean viewWeek(int week) {
+			try {
+				Appointment appointment = new Appointment();
+				appointment.setCreator(username);
+				appointment.setWeek(week);
+				
+				File sendFile = XMLConverter.toXML(appointment, "Appointment.xml", "week");
+				clientSocket.send(sendFile);
+				File receiveFile = clientSocket.receiveObject();
+				ArrayList<Appointment> appList = XMLConverter.makeAppointment(receiveFile);
+				for (Appointment a : appList) {
+					System.out.print("Week number: " + week);
+					int dayNr = 1;
+					while(dayNr <=7) {
+						if (dayNr == 1) {
+							System.out.print("\nMonday: ");
+						} else if (dayNr == 2) {
+							System.out.print("\nTuesday: ");
+						} else if (dayNr == 3) {
+							System.out.print("\nWednesday: ");
+						} else if (dayNr == 4) {
+							System.out.print("\nThursday: ");
+						} else if (dayNr == 5) {
+							System.out.print("\nFriday: ");
+						} else if (dayNr == 6) {
+							System.out.print("\nSaturday: ");
+						} else if (dayNr == 7) {
+							System.out.print("\nSunday: ");
+						}
+						if (equalsDay(a.getStart(), dayNr)) {
+							System.out.print(a.getAID() + " " + a.getName() + " " + getTime(a.getStart()) + "-" + getTime(a.getEnd()) + "; ");
+						} else {
+							dayNr++;
+						}
+					}
+				}
+				return true;
+			} catch (Exception e) {
+				System.out.println("Could not view week");
+				e.printStackTrace();
+				return false;
 			}
 		}
 		
@@ -489,6 +543,21 @@ public class UserInterface {
 			sb.append(":");
 			sb.append(gc.get(Calendar.MINUTE));
 			return sb.toString();
+		}
+		
+		private String getTime(String dateTime) {
+			return dateTime.split(" ")[1];
+		}
+		
+		private boolean equalsDay(String date, int dayNr) {
+			
+			String[] dateRaw = date.split("")[0].split("-");
+			int year = Integer.parseInt(dateRaw[0]);
+			int month = Integer.parseInt(dateRaw[1]) - 1;
+			int day = Integer.parseInt(dateRaw[2]);
+			GregorianCalendar gc = new GregorianCalendar(year, month, day);
+			
+			return gc.get(Calendar.DAY_OF_WEEK) - 1 == dayNr;
 		}
 	
 	}

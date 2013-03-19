@@ -7,18 +7,23 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import server.ServerLogic;
+import server.db.Interaction;
 
 public class Session extends Thread {
+	private ServerLogic serverLogic;
+	private Interaction interaction;
 	private Socket socket;
 	private int sessionID;
-	boolean running = true;
+	private boolean running = true;
 	
 	ObjectInputStream objectInputStream;
 	ObjectOutputStream objectOutputStream;
 	
-	public Session(Socket socket, int sessionID) {
+	public Session(Socket socket, int sessionID, Interaction interaction) {
 		this.socket = socket;
 		this.sessionID = sessionID;
+		this.interaction = interaction;
+		serverLogic = new ServerLogic(interaction);
 	}
 
 	public void run() {		
@@ -32,7 +37,7 @@ public class Session extends Thread {
             		running = false;
             		closeConnection();
             	} else {
-            		File response = ServerLogic.handleRequest(received);
+            		File response = serverLogic.handleRequest(received);
             		sendObject(response);
             	}
             }

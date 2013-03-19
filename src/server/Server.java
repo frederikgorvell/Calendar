@@ -1,5 +1,6 @@
 package server;
 
+import server.db.Interaction;
 import server.net.SocketServer;
  
 public class Server {
@@ -8,7 +9,8 @@ public class Server {
 	public static void main(String[] args) {	
 		System.out.println("Starting server...");
 		//DBConnection db = new DBConnection();
-		SocketServer sc = new SocketServer(port/*, db*/);
+		Interaction i = new Interaction();
+		SocketServer sc = new SocketServer(port, i);
 		sc.start();
 	}
 }

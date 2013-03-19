@@ -1,6 +1,8 @@
 package server;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -10,18 +12,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
+import server.db.Interaction;
 import shared.XMLConverter;
+import shared.model.Appointment;
 
 public class ServerLogic {
-	/**
-	 * Handles all client requests based on the request field in the Request object.
-	 * The response contains an 'error' if there are some problem of some sort that 
-	 * hinders the server from returning the expected data.
-	 * 
-	 * @param request - Containing the relevant information regarding the request.
-	 * @return Response - Containing relevant information to be returned to the client.
-	 */
-	public static File handleRequest(File request) throws Exception {
+	
+	private Interaction inter;
+
+	public ServerLogic(Interaction inter) {
+		this.inter = inter;
+	}
+	
+	public File handleRequest(File request) throws Exception {
 		if (request == null) return null;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -32,6 +36,7 @@ public class ServerLogic {
 		
 		if (type.equals("Login")) {
 			//TODO db
+			
 			return XMLConverter.makeConfirmed(1);
 			
 		} else if (type.equals("Appointment")) {
@@ -46,19 +51,102 @@ public class ServerLogic {
 			String spec = XMLConverter.getValue("Specification", element);
 			
 			if (spec.equals("new")) {
-				return XMLConverter.makeConfirmed(0);
+				int aid = inter.getMaxAID() + 1;
+				if (aid == -1) return XMLConverter.makeFailed("Could not make new appointment");
+				String name = XMLConverter.getValue("Name", element);
+				int start = makeDateNumber(XMLConverter.getValue("Start", element));
+				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String week = XMLConverter.getValue("Week", element);
+				String desc = XMLConverter.getValue("Description", element);
+				String loc = XMLConverter.getValue("Location", element);
+				if (inter.addAppointment(aid, name, start, end, week, desc, loc, username)) {
+					return XMLConverter.makeConfirmed(aid);
+				} else {
+					return XMLConverter.makeFailed("Could not make new appointment");
+				}
 				//TODO
 			} else if (spec.equals("delete")) {
-				//TODO
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				if (inter.deleteAppointment(aid))
+					return XMLConverter.makeConfirmed(aid);
+				else
+					return XMLConverter.makeFailed("Could not delete appointment " + aid);
 			} else if (spec.equals("edit")) {
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				String name = XMLConverter.getValue("Name", element);
+				int start = makeDateNumber(XMLConverter.getValue("Start", element));
+				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String week = XMLConverter.getValue("Week", element);
+				String desc = XMLConverter.getValue("Description", element);
+				String loc = XMLConverter.getValue("Location", element);
+				if (inter.editAppointment(aid, name, start, end, week, desc, loc)) {
+					return XMLConverter.makeConfirmed(aid);
+				} else {
+					return XMLConverter.makeFailed("Could not make new appointment");
+				}
 				//TODO
 			} else if (spec.equals("view")) {
-				//TODO
-				//return request;
+				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
+				ResultSet rs = inter.getAppointment(aid);
+				if (rs != null) {
+					rs.next();
+					Appointment a = new Appointment();
+					a.setAID(Integer.parseInt(rs.getString(1)));
+					a.setName(rs.getString(2));
+					a.setStart(makeDateString(rs.getString(3)));
+					a.setEnd(makeDateString(rs.getString(4)));
+					a.setWeek(Integer.parseInt(rs.getString(5)));
+					a.setDescription(rs.getString(6));
+					//HVA GJ¯R DATABASEN?
+					a.setLocation(rs.getString(7));
+					return XMLConverter.toXML(a, "appointment.xml", "view");
+				} else {
+					return XMLConverter.makeFailed("Could not view appointment " + aid);
+				}
 			} else if (spec.equals("viewOther")) {
-				//TODO
+				String week = XMLConverter.getValue("Week", element);
+				ResultSet rs = inter.getUserCalendar(username, week);
+				if (rs != null) {
+					ArrayList<Appointment> appList = new ArrayList<Appointment>();
+					Appointment a;
+					while(rs.next()) {
+						a = new Appointment();
+						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setName(rs.getString(2));
+						a.setStart(makeDateString(rs.getString(3)));
+						a.setEnd(makeDateString(rs.getString(4)));
+						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setDescription(rs.getString(6));
+						//HVA GJ¯R DATABASEN?
+						a.setLocation(rs.getString(7));
+						appList.add(a);
+					}
+					return XMLConverter.toXML(appList, "appointments.xml");
+				} else {
+					return XMLConverter.makeFailed("Could not view week");
+				}
 			} else if (spec.equals("week")) {
-				//TODO
+				String week = XMLConverter.getValue("Week", element);
+				ResultSet rs = inter.getUserCalendar(XMLConverter.getValue("Other", element), week);
+				if (rs != null) {
+					ArrayList<Appointment> appList = new ArrayList<Appointment>();
+					Appointment a;
+					while(rs.next()) {
+						a = new Appointment();
+						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setName(rs.getString(2));
+						a.setStart(makeDateString(rs.getString(3)));
+						a.setEnd(makeDateString(rs.getString(4)));
+						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setDescription(rs.getString(6));
+						//HVA GJ¯R DATABASEN?
+						a.setLocation(rs.getString(7));
+						appList.add(a);
+					}
+					return XMLConverter.toXML(appList, "appointments.xml");
+				} else {
+					return XMLConverter.makeFailed("Could not view week");
+				}
 			}
 		} else if (type.equals("Invite")) {
 			return XMLConverter.makeConfirmed(0);
@@ -114,26 +202,45 @@ public class ServerLogic {
 		return null;		
 	}
 	
+	private int makeDateNumber(String dateString) {
+		StringBuffer sb = new StringBuffer();
+		String[] raw = dateString.split(" ");
+		String[] rawDate = raw[0].split("-");
+		String[] rawTime = raw[1].split(":");
+		sb.append(rawDate[0]);
+		sb.append(addZero(rawDate[1]));
+		sb.append(addZero(rawDate[2]));
+		sb.append(addZero(rawTime[0]));
+		sb.append(addZero(rawTime[1]));
+		return Integer.parseInt(sb.toString());
+	}
+	
+	private String addZero(String number) {
+		if (number.length() > 1)
+			return number;
+		else
+			return "0" + number;
+	}
+	
+	private String makeDateString(String dateNumber) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(dateNumber.substring(0,3));
+		sb.append("-");
+		sb.append(dateNumber.substring(4, 5));
+		sb.append("-");
+		sb.append(dateNumber.substring(6,7));
+		sb.append(" ");
+		sb.append(dateNumber.substring(8,9));
+		sb.append(":");
+		sb.append(dateNumber.substring(10,11));
+		return sb.toString();
+	}
+	
 	/*private static String getValue(String tag, Element element) {
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
 	}*/
-	
-
-	
-	/**
-	 * This method is called when the client has requestet a login.
-	 * The Request will then contain a username and a password that will be used to 
-	 * authenticate the user.
-	 * 
-	 * If the authentication gets through the Response is loaded with the key "result" with the value "loginOK"
-	 * and returned
-	 * 
-	 * @param request - The Request object containing the relevant information
-	 * @param response - The Response object to be loaded with the response
-	 * @param dc - The DbConnection object containing an open connection with the database
-	 */
 	/*
 	private static void login(Request request, Response response, DbConnection dc) {
 		String username = (String) request.getItem("username");
@@ -153,9 +260,9 @@ public class ServerLogic {
 		}
 	}
 	*/
-	
+	/*
 	public static void main(String[] args) throws Exception {
 		File f = new File("login.xml");
 		ServerLogic.handleRequest(f);
-	}
+	}*/
 }
