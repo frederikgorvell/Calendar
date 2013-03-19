@@ -145,11 +145,11 @@ public class ServerLogic {
 					Appointment a;
 					while(rs.next()) {
 						a = new Appointment();
-						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setAID(rs.getInt(1));
 						a.setName(rs.getString(2));
 						a.setStart(makeDateString(rs.getString(3)));
 						a.setEnd(makeDateString(rs.getString(4)));
-						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setWeek(rs.getInt(5));
 						a.setDescription(rs.getString(6));
 						//HVA GJ¯R DATABASEN?
 						a.setLocation(rs.getString(7));
@@ -236,15 +236,15 @@ public class ServerLogic {
 	
 	private String makeDateString(String dateNumber) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(dateNumber.substring(0,3));
+		sb.append(dateNumber.substring(0,4));
 		sb.append("-");
-		sb.append(dateNumber.substring(4, 5));
+		sb.append(dateNumber.substring(4, 6));
 		sb.append("-");
-		sb.append(dateNumber.substring(6,7));
+		sb.append(dateNumber.substring(6,8));
 		sb.append(" ");
-		sb.append(dateNumber.substring(8,9));
+		sb.append(dateNumber.substring(8,10));
 		sb.append(":");
-		sb.append(dateNumber.substring(10,11));
+		sb.append(dateNumber.substring(10,12));
 		return sb.toString();
 	}
 	

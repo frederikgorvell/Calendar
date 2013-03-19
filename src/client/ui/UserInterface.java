@@ -559,7 +559,7 @@ public class UserInterface {
 		}
 		
 		private boolean equalsDay(String date, int dayNr) {
-			
+			System.out.println(date);
 			String[] dateRaw = date.split("")[0].split("-");
 			int year = Integer.parseInt(dateRaw[0]);
 			int month = Integer.parseInt(dateRaw[1]) - 1;
