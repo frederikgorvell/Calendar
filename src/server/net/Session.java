@@ -60,7 +60,7 @@ public class Session extends Thread {
 	
 	public File receiveObject() {
 		try {
-			File f = new File("calendar.xml");
+			File f = new File("receive.xml");
 			System.out.println("Sesion: [" + sessionID + "] - Waiting for object...");
 			//
 			InputStream is = null;
@@ -76,7 +76,7 @@ public class Session extends Thread {
 		        System.out.println("Can't get socket input stream. ");
 		    }
 			try {
-		        fos = new FileOutputStream("calendar.xml");
+		        fos = new FileOutputStream("receive.xml");
 		        bos = new BufferedOutputStream(fos);
 
 		    } catch (FileNotFoundException ex) {

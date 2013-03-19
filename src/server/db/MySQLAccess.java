@@ -7,7 +7,7 @@ public class MySQLAccess{
 	//Database and login information
     private Connection conn = null;
     private String url = "jdbc:mysql://localhost:3306/";
-    private String dbName = "db2";
+    private String dbName = "calendar";
     private String driver = "com.mysql.jdbc.Driver";
     private String user = "root";
     private int userID = 99;
