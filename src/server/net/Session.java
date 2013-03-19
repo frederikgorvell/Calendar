@@ -55,7 +55,10 @@ public class Session extends Thread {
 		try {
 			System.out.println("Sesion: [" + sessionID + "] - Waiting for object...");
 			objectInputStream = new ObjectInputStream(socket.getInputStream());
-	        return (File) objectInputStream.readObject();
+	        File f = (File) objectInputStream.readObject();
+	        System.out.println(f.toString());
+	        return f;
+//			return (File) objectInputStream.readObject();
 		} catch(Exception e) {
 			running = false;
 			return null;

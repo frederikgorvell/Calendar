@@ -307,7 +307,7 @@ public class Interaction {
 	}
 	
 	public ResultSet getPerson(String username) {
-		String sql = "SELECT * FROM person WHERE username = " + username;
+		String sql = "SELECT * FROM person p WHERE p.username = " + username;
 		try {
 			access.initialize();
 			access.makeSingleQuery(sql);
