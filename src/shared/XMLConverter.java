@@ -23,8 +23,8 @@ public class XMLConverter {
 
 	private static final String XML_VERSION_ENCODING = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-	public static File toXML(Login login, String filename) {
-		filename = "calendar.xml";
+	public static File toXML(Login login/*, String filename*/) {
+		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Login";
 
@@ -37,8 +37,8 @@ public class XMLConverter {
 		return toFile(s, filename);
 	}
 
-	public static File toXML(Appointment appointment, String filename, String spec) {
-		filename = "calendar.xml";
+	public static File toXML(Appointment appointment,/* String filename,*/ String spec) {
+		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
 
@@ -59,8 +59,8 @@ public class XMLConverter {
 		return toFile(s, filename);
 	}
 	
-	public static File toXML(ArrayList<Appointment> appList, String filename) {
-		filename = "calendar.xml";
+	public static File toXML(ArrayList<Appointment> appList/*, String filename*/) {
+		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
 		
@@ -94,7 +94,7 @@ public class XMLConverter {
 		s = addTag(s, "InvitedUser", invitedUser);
 		s.append("</" + type + ">");
 
-		return toFile(s, "calendar.xml");
+		return toFile(s, "request.xml");
 	}
 
 	private static StringBuffer addTag(StringBuffer s, String tagName, String tagContent) {
@@ -127,7 +127,7 @@ public class XMLConverter {
 		s = addTag(s, "AID", AID + "");
 		s.append("</" + type + ">");
 
-		return toFile(s, "calendar.xml");
+		return toFile(s, "response.xml");
 	}
 	
 	public static File makeFailed(String message) {
@@ -139,7 +139,7 @@ public class XMLConverter {
 		s = addTag(s, "Message", message);
 		s.append("</" + type + ">");
 
-		return toFile(s, "calendar.xml");
+		return toFile(s, "response.xml");
 	}
 	
 	Object readXMLintoObject (String filename){

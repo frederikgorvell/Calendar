@@ -111,7 +111,7 @@ public class ServerLogic {
 					a.setDescription(rs.getString(6));
 					//HVA GJ¯R DATABASEN?
 					a.setLocation(rs.getString(7));
-					return XMLConverter.toXML(a, "appointment.xml", "view");
+					return XMLConverter.toXML(a,/* "appointment.xml",*/ "view");
 				} else {
 					return XMLConverter.makeFailed("Could not view appointment " + aid);
 				}
@@ -133,7 +133,7 @@ public class ServerLogic {
 						a.setLocation(rs.getString(7));
 						appList.add(a);
 					}
-					return XMLConverter.toXML(appList, "appointments.xml");
+					return XMLConverter.toXML(appList/*, "appointments.xml"*/);
 				} else {
 					return XMLConverter.makeFailed("Could not view week");
 				}
@@ -155,7 +155,7 @@ public class ServerLogic {
 						a.setLocation(rs.getString(7));
 						appList.add(a);
 					}
-					return XMLConverter.toXML(appList, "calendar.xml");
+					return XMLConverter.toXML(appList/*, "calendar.xml"*/);
 				} else {
 					return XMLConverter.makeFailed("Could not view week");
 				}
