@@ -32,7 +32,14 @@ public class UserInterface {
 		weekNr = time.get(Calendar.WEEK_OF_YEAR);
 //		xmlc = new XMLConverter();
 		scan = new Scanner(System.in);
+		System.out.println("Client started...");
+		while(!connect()) {
+			System.out.println("Could not connect, press any button to retry");
+			scan.nextLine();
+		}
+		
 		boolean loginOK = false;
+		
 		while (!loginOK) {
 			loginOK = login();
 //			loginOK = loginPrompt();
@@ -42,24 +49,26 @@ public class UserInterface {
 		new Shell();
 	}
 	
-	private boolean login() {
-		System.out.println("Client started...");
+	private boolean connect() {
 		clientSocket = new SocketClient(hostAddr, port);
-
 		boolean connection = clientSocket.openConnection();
-
-		if (connection) {
-			System.out.print("Enter username: ");
-			username = scan.nextLine();
-			System.out.print("Enter password: ");
-			String password = scan.nextLine();
-			
-			Login login = new Login(username, password);
-			File loginFile = XMLConverter.toXML(login, "calendar.xml");
+		return connection;
+	}
+	
+	private boolean login() {
+		
+		
+		System.out.print("Enter username: ");
+		username = scan.nextLine();
+		System.out.print("Enter password: ");
+		String password = scan.nextLine();
+		
+		Login login = new Login(username, password);
+		File loginFile = XMLConverter.toXML(login, "calendar.xml");
 //			File loginFile = xmlc.toXML(login, "login.xml");
-			clientSocket.send(loginFile);
-			File received = clientSocket.receiveObject();
-			return XMLConverter.isConfirmed(received);
+		clientSocket.send(loginFile);
+		File received = clientSocket.receiveObject();
+		return XMLConverter.isConfirmed(received);
 			
 			/*
 			Request request = new Request();
@@ -72,8 +81,8 @@ public class UserInterface {
 			System.out.println("error " + response.getItem("error"));
 			System.out.println("result:" + " " + response.getItem("result"));
 			*/
-		}
-		return false;
+		
+		
 		
 		
 	}
