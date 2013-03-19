@@ -136,7 +136,7 @@ public class Interaction {
 	}
 	
 	//NY!
-	public boolean addAppointment(int id, String name, int start, int end, String week, String descr, String loc, String username) {
+	public boolean addAppointment(int id, String name, String start, String end, String week, String descr, String loc, String username) {
 
 		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + name + ",'" + start + "','" 
 			+ end + "','" + descr + "','" + loc + "','" + username + "');";
@@ -177,10 +177,10 @@ public class Interaction {
 	}
 
 	//NY!
-	public boolean editAppointment(int id, String name, int start, int end, String week, String descr, String loc) {
-		String appointmentSQL = "UPDATE appointment SET name = '" + name + "', starttime = " 
-			+ start + ", endtime = " + end 
-			+ ", week = '" + week + "', description = '" + descr + "', location = '" 
+	public boolean editAppointment(int id, String name, String start, String end, String week, String descr, String loc) {
+		String appointmentSQL = "UPDATE appointment SET name = '" + name + "', starttime = '" 
+			+ start + "', endtime = '" + end 
+			+ "', week = '" + week + "', description = '" + descr + "', location = '" 
 			+ loc +"' WHERE AID = " + id + ";";
 
 		try {

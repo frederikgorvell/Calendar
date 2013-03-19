@@ -66,8 +66,8 @@ public class ServerLogic {
 				int aid = inter.getMaxAID() + 1;
 				if (aid == -1) return XMLConverter.makeFailed("Could not make new appointment");
 				String name = XMLConverter.getValue("Name", element);
-				int start = makeDateNumber(XMLConverter.getValue("Start", element));
-				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String start = makeDateNumber(XMLConverter.getValue("Start", element));
+				String end = makeDateNumber(XMLConverter.getValue("End", element));
 				String week = XMLConverter.getValue("Week", element);
 				String desc = XMLConverter.getValue("Description", element);
 				String loc = XMLConverter.getValue("Location", element);
@@ -86,8 +86,8 @@ public class ServerLogic {
 			} else if (spec.equals("edit")) {
 				int aid = Integer.parseInt(XMLConverter.getValue("AID", element));
 				String name = XMLConverter.getValue("Name", element);
-				int start = makeDateNumber(XMLConverter.getValue("Start", element));
-				int end = makeDateNumber(XMLConverter.getValue("End", element));
+				String start = makeDateNumber(XMLConverter.getValue("Start", element));
+				String end = makeDateNumber(XMLConverter.getValue("End", element));
 				String week = XMLConverter.getValue("Week", element);
 				String desc = XMLConverter.getValue("Description", element);
 				String loc = XMLConverter.getValue("Location", element);
@@ -214,7 +214,7 @@ public class ServerLogic {
 		return null;		
 	}
 	
-	private int makeDateNumber(String dateString) {
+	private String makeDateNumber(String dateString) {
 		StringBuffer sb = new StringBuffer();
 		String[] raw = dateString.split(" ");
 		String[] rawDate = raw[0].split("-");
@@ -224,7 +224,7 @@ public class ServerLogic {
 		sb.append(addZero(rawDate[2]));
 		sb.append(addZero(rawTime[0]));
 		sb.append(addZero(rawTime[1]));
-		return Integer.parseInt(sb.toString());
+		return sb.toString();
 	}
 	
 	private String addZero(String number) {
