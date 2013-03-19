@@ -295,9 +295,11 @@ public class UserInterface {
 				clientSocket.send(sendFile);
 				File receiveFile = clientSocket.receiveObject();
 				ArrayList<Appointment> appList = XMLConverter.makeAppointment(receiveFile);
-				System.out.print("Week number: " + week);
+				System.out.println("==================");
+				System.out.println("Week number: " + week);
+				System.out.println("==================");
 				int dayNr = 1;
-				System.out.print("\nMonday: ");
+				System.out.print("Monday: ");
 				int i = 0;
 //				System.out.println("Size: " + appList.size());
 				while (i < appList.size()){
@@ -444,6 +446,7 @@ public class UserInterface {
 			if (end != null) {
 				a.setEnd(makeDateString(end));
 			}
+			/*
 			while (!end.after(start)) {
 				System.out.println("End time must be after start time!");
 				start = askUserStart(true);
@@ -455,6 +458,7 @@ public class UserInterface {
 					a.setEnd(makeDateString(end));
 				}
 			}
+			*/
 			System.out.print("Description: ");
 			String desc = scan.nextLine();
 			if (!desc.equals("")) {
@@ -465,7 +469,7 @@ public class UserInterface {
 			if (!location.equals("")) {
 				a.setLocation(location);
 			}
-			if (start.get(Calendar.WEEK_OF_YEAR) != a.getWeek()) {
+			if (start != null && start.get(Calendar.WEEK_OF_YEAR) != a.getWeek()) {
 				a.setWeek(start.get(Calendar.WEEK_OF_YEAR));
 			}
 		
@@ -618,7 +622,7 @@ public class UserInterface {
 			} else if (dayNr == 7) {
 				System.out.print("\nSunday: ");
 			} else {
-				//System.out.println("Day error");
+				System.out.println("Day error");
 			}
 		}
 	
