@@ -53,6 +53,7 @@ public class SocketClient {
 		        output.write(buffer, 0, bytesRead);
 		    }
 		    fileInputStream.close();
+		    output.flush();/////////////////
 		    return true;
 		} catch (Exception e) {
 			return false;
@@ -156,7 +157,7 @@ public class SocketClient {
 //		        System.out.println(bytesReceived);
 		        break;
 		    }
-	
+		    out.flush();/////////////////////
 		    return file;
 		} catch (Exception e) {
 			return null;

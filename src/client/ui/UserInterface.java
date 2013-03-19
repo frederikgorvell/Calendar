@@ -38,9 +38,10 @@ public class UserInterface {
 			scan.nextLine();
 		}
 		
-		boolean loginOK = false;
+		boolean loginOK = login();
 		
 		while (!loginOK) {
+			System.out.println("Wrong username or password!");
 			loginOK = login();
 //			loginOK = loginPrompt();
 		}
@@ -56,8 +57,6 @@ public class UserInterface {
 	}
 	
 	private boolean login() {
-		
-		
 		System.out.print("Enter username: ");
 		username = scan.nextLine();
 		System.out.print("Enter password: ");
