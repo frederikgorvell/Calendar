@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -51,13 +52,38 @@ public class Session extends Thread {
             
             System.out.println("Session: " + sessionID + " terminated");
             
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public File receiveObject() {
+		try {
+			File file = null;
+	
+		    InputStream input = socket.getInputStream();
+	
+		    file = new File("calendar.xml");
+		    FileOutputStream out = new FileOutputStream(file);
+	
+		    byte[] buffer = new byte[1024*1024];
+	
+		    int bytesReceived = 0;
+	
+		    while((bytesReceived = input.read(buffer)) > 0) {
+		        out.write(buffer, 0, bytesReceived);
+//		        System.out.println(bytesReceived);
+		        break;
+		    }
+	
+		    return file;
+		} catch (Exception e) {
+			return null;
+		}
+		
+	}
+	
+	/*
 	public File receiveObject() {
 		try {
 
@@ -101,7 +127,7 @@ public class Session extends Thread {
 			e.printStackTrace();
 			return null;
 		}
-	}
+	}*/
 	
 	/*
 	public File receiveObject() {
@@ -114,7 +140,26 @@ public class Session extends Thread {
 			return null;
 		}
 	}*/
+	
+	public boolean sendObject(File file) {
+		try {
+		    OutputStream output = socket.getOutputStream();     
+	
+		    FileInputStream fileInputStream = new FileInputStream(file);
+		    byte[] buffer = new byte[1024*1024];
+		    int bytesRead = 0;
+	
+		    while((bytesRead = fileInputStream.read(buffer)) > 0) {
+		        output.write(buffer, 0, bytesRead);
+		    }
+		    fileInputStream.close();
+		    return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
+	/*
 	public boolean sendObject(File file) {
 		try {
 //			File file = new File("M:\\test.xml");
@@ -171,13 +216,13 @@ public class Session extends Thread {
 			/*oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject(f);
 			oos.flush();
-			System.out.println("File sent"); */
+			System.out.println("File sent"); 
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-	}
+	}*/
 	
 	/*public boolean sendObject(File response) {
 		try {
