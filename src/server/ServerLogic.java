@@ -110,7 +110,7 @@ public class ServerLogic {
 					a.setWeek(Integer.parseInt(rs.getString(5)));
 					a.setDescription(rs.getString(6));
 					//HVA GJ¯R DATABASEN?
-					a.setLocation(rs.getString(7));
+					a.setLocation(rs.getString(8));
 					return XMLConverter.toXML(a,/* "appointment.xml",*/ "view");
 				} else {
 					return XMLConverter.makeFailed("Could not view appointment " + aid);

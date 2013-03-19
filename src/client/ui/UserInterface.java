@@ -296,6 +296,7 @@ public class UserInterface {
 				int dayNr = 1;
 				System.out.print("\nMonday: ");
 				int i = 0;
+//				System.out.println("Size: " + appList.size());
 				while (i < appList.size()){
 					Appointment a = appList.get(i);
 					
@@ -308,6 +309,11 @@ public class UserInterface {
 						dayNr++;
 					}
 				}
+				while (dayNr < 7) {
+					printDay(dayNr + 1);
+					dayNr++;
+				}
+				System.out.println("");
 				/*
 				for (Appointment a : appList) {
 					System.out.print("Week number: " + week);
@@ -599,7 +605,7 @@ public class UserInterface {
 			} else if (dayNr == 7) {
 				System.out.print("\nSunday: ");
 			} else {
-				System.out.println("Day error");
+				//System.out.println("Day error");
 			}
 		}
 	
