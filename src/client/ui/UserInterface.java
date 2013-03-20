@@ -248,6 +248,7 @@ public class UserInterface {
 				}
 			} else if (userInput.command.equals("book")) {
 				//TODO
+				System.out.println("Not yet implemeted");
 			} else if (userInput.command.equals("invite")) {
 				try {
 					System.out.print("Username to invite: ");
