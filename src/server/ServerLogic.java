@@ -124,14 +124,14 @@ public class ServerLogic {
 					Appointment a;
 					while(rs.next()) {
 						a = new Appointment();
-						a.setAID(Integer.parseInt(rs.getString(1)));
+						a.setAID(rs.getInt(1));
 						a.setName(rs.getString(2));
 						a.setStart(makeDateString(rs.getString(3)));
 						a.setEnd(makeDateString(rs.getString(4)));
-						a.setWeek(Integer.parseInt(rs.getString(5)));
+						a.setWeek(rs.getInt(5));
 						a.setDescription(rs.getString(6));
 						//HVA GJ¯R DATABASEN?
-						a.setLocation(rs.getString(7));
+						a.setLocation(rs.getString(8));
 						appList.add(a);
 					}
 					return XMLConverter.toXML(appList/*, "appointments.xml"*/);
@@ -153,7 +153,7 @@ public class ServerLogic {
 						a.setWeek(rs.getInt(5));
 						a.setDescription(rs.getString(6));
 						//HVA GJ¯R DATABASEN?
-						a.setLocation(rs.getString(7));
+						a.setLocation(rs.getString(8));
 						appList.add(a);
 					}
 					return XMLConverter.toXML(appList/*, "calendar.xml"*/);
@@ -162,6 +162,7 @@ public class ServerLogic {
 				}
 			}
 		} else if (type.equals("Invite")) {
+			
 			return XMLConverter.makeConfirmed(0);
 			//TODO
 		}
