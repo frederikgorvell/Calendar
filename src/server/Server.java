@@ -8,7 +8,6 @@ public class Server {
 	
 	public static void main(String[] args) {	
 		System.out.println("Starting server...");
-		//DBConnection db = new DBConnection();
 		Interaction i = new Interaction();
 		SocketServer sc = new SocketServer(port, i);
 		sc.start();

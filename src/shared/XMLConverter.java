@@ -1,9 +1,7 @@
 package shared;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
@@ -23,7 +21,7 @@ public class XMLConverter {
 
 	private static final String XML_VERSION_ENCODING = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-	public static File toXML(Login login/*, String filename*/) {
+	public static File toXML(Login login) {
 		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Login";
@@ -37,7 +35,7 @@ public class XMLConverter {
 		return toFile(s, filename);
 	}
 
-	public static File toXML(Appointment appointment,/* String filename,*/ String spec) {
+	public static File toXML(Appointment appointment, String spec) {
 		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
@@ -59,7 +57,7 @@ public class XMLConverter {
 		return toFile(s, filename);
 	}
 	
-	public static File toXML(ArrayList<Appointment> appList/*, String filename*/) {
+	public static File toXML(ArrayList<Appointment> appList) {
 		String filename = "request.xml";
 		StringBuffer s = new StringBuffer();
 		final String type = "Appointment";
@@ -107,12 +105,12 @@ public class XMLConverter {
 	private static File toFile(StringBuffer s, String filename) {
 		File f = new File(filename);
 		try {
-			FileWriter fstream = new FileWriter(filename); // Create file
+			FileWriter fstream = new FileWriter(filename);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(s.toString());
-			out.close();// Close the output stream
+			out.close();
 			return f;
-		} catch (Exception e) {// Catch exception if any
+		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return f;
 		}
@@ -244,46 +242,8 @@ public class XMLConverter {
 			return -1;
 		}
 	}
-	/*
-	public static ArrayList<Appointment> makeAppointments(File received) {
-		//liste kanskje
-		try {
-			ArrayList<Appointment> appList = new ArrayList<Appointment>();
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(received);
-			doc.getDocumentElement().normalize();
-
-			NodeList nodes = doc.getElementsByTagName("Appointment");
-	
-			for (int i = 0; i < nodes.getLength(); i++) {
-				Node node = nodes.item(i);
-		
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element element = (Element) node;
-					
-					int AID = Integer.parseInt(getValue("AID", element));
-					String name = getValue("Name", element);
-					String start = getValue("Start", element);
-					String end = getValue("End", element);
-					int week = Integer.parseInt(getValue("Week", element));
-					String desc = getValue("Description", element);
-					String loc = getValue("Location", element);
-					
-					Appointment a = new Appointment(name, start, end, desc, loc);
-					a.setWeek(week);
-					appList.add(a);
-				}
-			}
-			return appList;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}*/
 	
 	public static ArrayList<Appointment> makeAppointment(File received) {
-		//liste kanskje
 		try {
 			ArrayList<Appointment> appList = new ArrayList<Appointment>();
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

@@ -24,7 +24,6 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to insert group.");
 		}
 
 	}
@@ -43,9 +42,7 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to join group.");
 		}
-
 	}
 
 	public boolean attendMeeting(int id) {
@@ -62,10 +59,7 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to insert.");
 		}
-
-
 	}
 
 	public boolean addMeeting(int id, String start, String end, String descr, int roomid, String date) {
@@ -86,9 +80,7 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to insert.");
 		}
-
 	}
 
 	public boolean deleteAppointment(int id) {
@@ -104,9 +96,7 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to delete.");
 		}
-
 	}
 	
 	public int getMaxAID() {
@@ -117,24 +107,12 @@ public class Interaction {
 			ResultSet rs = access.makeSingleQuery(sql);
 			rs.next();
 			return rs.getInt(1);
-			/*while(rs.next())
-			{
-	//			String aid = rs.getString(1);
-				String start = rs.getString(2);
-				String end = rs.getString(3);
-				String descr = rs.getString(4);
-				String status = rs.getString(5);
-				String room = rs.getString(7);
-	
-				System.out.println(start + " " + end + " " + descr + " " + status + " " + room );
-			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
 		}
 	}
 	
-	//NY!
 	public boolean addAppointment(int id, String name, String start, String end, String week, String descr, String loc, String username, int roomID) {
 
 		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ", '" + name + "', '" + start + "', '" 
@@ -150,58 +128,15 @@ public class Interaction {
 		catch (Exception e) {
 			e.printStackTrace();
 			return false;
-			//System.out.println("Was not able to insert.");
 		}
 
 	}
 
-	public boolean addAppointment(int id, String start, String end, String descr, int roomid, String date) {
-
-		String appointmentSQL = "INSERT INTO appointment VALUES (" + id + ",'" + start + "','" 
-			+ end + "','" + descr + "','" + access.getUser() + "'," + roomid + ",'" + date +"');";
-
-		try {
-			access.initialize();
-			access.makeSingleUpdate(appointmentSQL);
-			System.out.println("Appointment was added.");
-			access.close();
-			return true;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return false;
-			//System.out.println("Was not able to insert.");
-		}
-
-	}
-
-	//NY!
 	public boolean editAppointment(int id, String name, String start, String end, String week, String descr, String loc) {
 		String appointmentSQL = "UPDATE appointment SET name = '" + name + "', starttime = '" 
 			+ start + "', endtime = '" + end 
 			+ "', week = '" + week + "', description = '" + descr + "', location = '" 
 			+ loc +"' WHERE AID = " + id + ";";
-
-		try {
-			access.initialize();
-			access.makeSingleUpdate(appointmentSQL);
-			System.out.println("Appointment successfully edited.");
-			access.close();
-			return true;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return false;
-			//System.out.println("Was not able to update.");
-		}
-	}
-	
-	//The user must enter all appointment data over again (for simplicity).
-	public boolean editAppointment(int id, String start, String end, String descr, int roomid, String date) {
-		String appointmentSQL = "UPDATE appointment SET starttime = '" 
-			+ start + "', endtime = '" 
-			+ end + "', description = '" + descr + "', roomID = " + roomid + ", date = '" 
-			+ date +"' WHERE AID = " + id + ";";
 
 		try {
 			access.initialize();
@@ -223,60 +158,28 @@ public class Interaction {
 			access.initialize();
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
-			//System.out.println("ID START END DESCRIPTION STATUS ROOM");
-			/*while(rs.next())
-			{
-				String aid = rs.getString(1);
-				String start = rs.getString(2);
-				String end = rs.getString(3);
-				String descr = rs.getString(4);
-				String status = rs.getString(5);
-				String room = rs.getString(7);
-	
-				System.out.println(aid + " " + start + " " + end + " " + descr + " " + status + " " + room );
-	//			System.out.println(String.format("%s %s %s %s %s %s", aid, start, end, descr, status, room));
-			}*/
 			access.close();
 			return rs;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return null;
-			//System.out.println("Was not able to get appointments.");
 		}
-
 	}
 
 	public ResultSet getUserCalendar(String username, String week) {
-
-		//ORDER BY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		String sql = "SELECT * FROM appointment WHERE username = '" + username 
 				+ "' AND week = '" + week + "' ORDER BY starttime ASC;";
 		try {
 			access.initialize();
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
-			//System.out.println("ID START END DESCRIPTION STATUS ROOM");
-			/*while(rs.next())
-			{
-				String aid = rs.getString(1);
-				String start = rs.getString(2);
-				String end = rs.getString(3);
-				String descr = rs.getString(4);
-				String status = rs.getString(5);
-				String room = rs.getString(7);
-	
-				System.out.println(aid + " " + start + " " + end + " " + descr + " " + status + " " + room );
-	//			System.out.println(String.format("%s %s %s %s %s %s", aid, start, end, descr, status, room));
-			}*/
 			return rs;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return null;
-			//System.out.println("Was not able to get appointments.");
 		}
-
 	}
 
 	public ResultSet getAppointment(int id) {
@@ -285,17 +188,6 @@ public class Interaction {
 			access.initialize();
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
-			/*while(rs.next())
-			{
-	//			String aid = rs.getString(1);
-				String start = rs.getString(2);
-				String end = rs.getString(3);
-				String descr = rs.getString(4);
-				String status = rs.getString(5);
-				String room = rs.getString(7);
-	
-				System.out.println(start + " " + end + " " + descr + " " + status + " " + room );
-			}*/
 			return rs;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -310,17 +202,6 @@ public class Interaction {
 			access.initialize();
 			access.makeSingleQuery(sql);
 			ResultSet rs = access.makeSingleQuery(sql);
-			/*while(rs.next())
-			{
-	//			String aid = rs.getString(1);
-				String start = rs.getString(2);
-				String end = rs.getString(3);
-				String descr = rs.getString(4);
-				String status = rs.getString(5);
-				String room = rs.getString(7);
-	
-				System.out.println(start + " " + end + " " + descr + " " + status + " " + room );
-			}*/
 			return rs;
 		} catch (Exception e) {
 			//e.printStackTrace();
@@ -328,7 +209,4 @@ public class Interaction {
 			return null;
 		}
 	}
-
-
-
 }

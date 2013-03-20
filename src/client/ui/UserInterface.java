@@ -32,7 +32,6 @@ public class UserInterface {
 		GregorianCalendar time = new GregorianCalendar();
 		weekNr = time.get(Calendar.WEEK_OF_YEAR);
 		curWeek = weekNr;
-//		xmlc = new XMLConverter();
 		scan = new Scanner(System.in);
 		System.out.println("Client started...");
 		while(!connect()) {
@@ -45,10 +44,7 @@ public class UserInterface {
 		while (!loginOK) {
 			System.out.println("Wrong username or password!");
 			loginOK = login();
-//			loginOK = loginPrompt();
 		}
-		
-//		ClientSocket cs = new ClientSocket();
 		new Shell();
 	}
 	
@@ -65,54 +61,11 @@ public class UserInterface {
 		String password = scan.nextLine();
 		
 		Login login = new Login(username, password);
-		File loginFile = XMLConverter.toXML(login/*, "calendar.xml"*/);
-//			File loginFile = xmlc.toXML(login, "login.xml");
+		File loginFile = XMLConverter.toXML(login);
 		clientSocket.send(loginFile);
 		File received = clientSocket.receiveObject();
 		return XMLConverter.isConfirmed(received);
-			
-			/*
-			Request request = new Request();
-			request.setRequest(Request.LOGIN);
-			request.addItem("username", "herpderp@gmail.com");
-			request.addItem("password", "passord");
-			cc.sendObject(request);
-			Response response = cc.reciveObject();
-			cc.closeConnection();
-			System.out.println("error " + response.getItem("error"));
-			System.out.println("result:" + " " + response.getItem("result"));
-			*/
-		
-		
-		
-		
 	}
-	
-	/*
-	private boolean loginPrompt() {
-		System.out.print("Enter username: ");
-		String username = scan.nextLine();
-		System.out.print("Enter password: ");
-		String password = scan.nextLine();
-		Login login = new Login(username, password);
-		if (isCorrect(log)) {
-			return true;
-		}
-		return true;
-	}*/
-	
-	//public static void main(String[] args) throws Exception /* CHANGE! */ {
-		//new UserInterface();
-	//}
-	/*
-	class ReceiverThread extends Thread {
-		//receive from server, alternate ask for updates on invites etc
-		//don't know if i need multiple SocketClient
-		public void run() {
-			
-		}
-	}*/
-
 
 	class UserInput {
 		String command;
@@ -176,8 +129,6 @@ public class UserInterface {
 	
 		void printInputPrefix() {
 			System.out.print("Calendar> ");
-			//GregorianCalendar gc = new GregorianCalendar(2013, 2, 30, 25, 61);
-			//System.out.println(gc.get(Calendar.DAY_OF_MONTH));
 		}
 	
 		void handleUserInput() throws IOException {
@@ -186,22 +137,6 @@ public class UserInterface {
 			String a2 = userInput.argument2;
 			if(userInput.command.equals("thisWeek")) {
 				viewWeek(weekNr);
-				
-				//TODO
-				/*
-				if (a1 == null) {
-					System.out.println("Provide a name for the person you want to add.");
-				} else if (a2 == null) { 
-					if (myList.addPerson(a1, "n/a")) {
-						System.out.println("Added person " + a1 + ".");
-					} else {	
-						System.out.println(a1 + " already exists in the list.");
-					}
-				} else if (myList.addPerson(a1, a2)) {
-					System.out.println("Added person " + a1 + " with phone " + a2 + ".");
-				} else {
-					System.out.println(a1 + " already exists in the list.");
-				}*/
 			} else if (userInput.command.equals("week")) {
 				viewWeek(curWeek);
 			} else if (userInput.command.equals("next")) {
@@ -259,7 +194,6 @@ public class UserInterface {
 						System.out.println("Could not invite " + invitedUser + " to appointment " + a1);
 					}
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
 					System.out.println("Invalid appointmentID, must be a number!");
 				}
 				//TODO
@@ -302,7 +236,6 @@ public class UserInterface {
 				int dayNr = 1;
 				System.out.print("Monday: ");
 				int i = 0;
-//				System.out.println("Size: " + appList.size());
 				while (i < appList.size()){
 					Appointment a = appList.get(i);
 					
@@ -320,33 +253,6 @@ public class UserInterface {
 					dayNr++;
 				}
 				System.out.println("");
-				/*
-				for (Appointment a : appList) {
-					System.out.print("Week number: " + week);
-					int dayNr = 1;
-					while(dayNr <=7) {
-						if (dayNr == 1) {
-							System.out.print("\nMonday: ");
-						} else if (dayNr == 2) {
-							System.out.print("\nTuesday: ");
-						} else if (dayNr == 3) {
-							System.out.print("\nWednesday: ");
-						} else if (dayNr == 4) {
-							System.out.print("\nThursday: ");
-						} else if (dayNr == 5) {
-							System.out.print("\nFriday: ");
-						} else if (dayNr == 6) {
-							System.out.print("\nSaturday: ");
-						} else if (dayNr == 7) {
-							System.out.print("\nSunday: ");
-						}
-						if (equalsDay(a.getStart(), dayNr)) {
-							System.out.print(a.getAID() + " " + a.getName() + " " + getTime(a.getStart()) + "-" + getTime(a.getEnd()) + "; ");
-						} else {
-							dayNr++;
-						}
-					}
-				}*/
 				return true;
 			} catch (Exception e) {
 				System.out.println("Could not view week");
@@ -356,7 +262,6 @@ public class UserInterface {
 		}
 		
 		private boolean newAppointment() {
-			//TODO
 			System.out.print("Appointment name: ");
 			String name = scan.nextLine();
 			GregorianCalendar start = askUserStart(false);
@@ -381,7 +286,6 @@ public class UserInterface {
 			File receiveFile = clientSocket.receiveObject();
 			a.setAID(XMLConverter.getAID(receiveFile));
 			if (a.getAID() == -1) {
-				System.out.println("AID = -1");/////////////////////////////////////
 				return false;
 			}
 			return XMLConverter.isConfirmed(receiveFile);
@@ -390,7 +294,7 @@ public class UserInterface {
 		
 		private boolean deleteAppointment(int AID) {
 			Appointment a = new Appointment(AID);
-			File sendFile = XMLConverter.toXML(a,/* "calendar.xml",*/ "delete");
+			File sendFile = XMLConverter.toXML(a, "delete");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			if (XMLConverter.isFailed(receiveFile)) {
@@ -404,7 +308,7 @@ public class UserInterface {
 		private Appointment getAppointment(int AID) {
 			Appointment a = new Appointment(AID);
 			
-			File sendFile = XMLConverter.toXML(a, /*"calendar.xml", */"view");
+			File sendFile = XMLConverter.toXML(a, "view");
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			if (XMLConverter.isFailed(receiveFile)) {
@@ -447,19 +351,6 @@ public class UserInterface {
 			if (end != null) {
 				a.setEnd(makeDateString(end));
 			}
-			/*
-			while (!end.after(start)) {
-				System.out.println("End time must be after start time!");
-				start = askUserStart(true);
-				if (start != null) {
-					a.setStart(makeDateString(start));
-				}
-				end = askUserEnd(true);
-				if (end != null) {
-					a.setEnd(makeDateString(end));
-				}
-			}
-			*/
 			System.out.print("Description: ");
 			String desc = scan.nextLine();
 			if (!desc.equals("")) {
@@ -478,14 +369,6 @@ public class UserInterface {
 			clientSocket.send(sendFile);
 			File receiveFile = clientSocket.receiveObject();
 			return XMLConverter.isConfirmed(receiveFile);
-			/*
-			a.setAID(XMLConverter.getAID(receiveFile));
-			if (a.getAID() == -1) {
-				System.out.println("AID = -1");/////////////////////////////////////
-				return false;
-			}
-			return XMLConverter.isConfirmed(receiveFile);
-			return false;*/
 		}
 		
 		private boolean invite(int AID, String invitedUser) {
@@ -500,7 +383,7 @@ public class UserInterface {
 			System.out.print("Start time (dd.mm.yyyy hh:mm): ");
 			String time = scan.nextLine();
 			boolean dateOK = false;
-			while (!dateOK /* || time = "cancel"*/) {
+			while (!dateOK) {
 				if (edit && time.equals("")) {
 					return null;
 				}
@@ -512,7 +395,6 @@ public class UserInterface {
 					time = scan.nextLine();
 				}
 			}
-			/* if time == "cancel" ...*/
 			String[] rawList = time.split(" ");
 			String[] date = rawList[0].split("\\.");
 			String[] clock = rawList[1].split(":");
@@ -528,12 +410,11 @@ public class UserInterface {
 		}
 		
 		private GregorianCalendar askUserEnd(boolean edit) {
-			//TODO
 			System.out.print("End time (dd.mm.yyyy hh:mm): ");
 			String time = scan.nextLine();
 			
 			boolean dateOK = false;
-			while (!dateOK /* || time = "cancel"*/) {
+			while (!dateOK) {
 				if (edit && time.equals("")) {
 					return null;
 				}
@@ -545,7 +426,6 @@ public class UserInterface {
 					time = scan.nextLine();
 				}
 			}
-			/* if time == "cancel" ...*/
 			String[] rawList = time.split(" ");
 			String[] date = rawList[0].split("\\.");
 			String[] clock = rawList[1].split(":");
